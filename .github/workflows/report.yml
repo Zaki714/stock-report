@@ -53,11 +53,13 @@ jobs:
           fi
 
       - name: 產出報告
+        timeout-minutes: 20   # 安全上限：真的卡住時讓 job 明確失敗，而不是無聲跑好幾小時
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DRY_RUN: '0'
+          PYTHONUNBUFFERED: '1'   # Python 在非終端機環境預設整批緩衝 print，加這個才會即時顯示 log
         run: python -m src.main ${{ steps.mode.outputs.mode }} ${{ steps.mode.outputs.slot }}
 
       - name: 提交結果
