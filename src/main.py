@@ -148,14 +148,17 @@ def run_evening() -> None:
             "history": otc_hist,
         }])[0])
 
-    # 個股三大法人買賣超排名
-    inst_ranking_buy, inst_ranking_sell = [], []
+    # 個股三大法人買賣超排名：外資／投信／自營商分開列，不合併成單一排名
+    # （合計數字會讓「外資大買、自營小賣」跟「三方都小買」看起來差不多，分開才看得出誰在動）
+    inst_ranking = {}
     if cfg.get("institutional_ranking", {}).get("enabled"):
-        top_n = cfg["institutional_ranking"].get("top_n", 10)
+        top_n = cfg["institutional_ranking"].get("top_n", 5)
         ranking = _safe(twse.fetch_institutional_ranking, [], "個股三大法人排名")
         if ranking:
-            inst_ranking_buy = ranking[:top_n]
-            inst_ranking_sell = list(reversed(ranking[-top_n:]))
+            for key, label in (("foreign_net", "foreign"), ("trust_net", "trust"), ("dealer_net", "dealer")):
+                by_metric = sorted(ranking, key=lambda x: x[key], reverse=True)
+                inst_ranking[f"{label}_buy"] = [{**r, "net": r[key]} for r in by_metric[:top_n]]
+                inst_ranking[f"{label}_sell"] = [{**r, "net": r[key]} for r in reversed(by_metric[-top_n:])]
 
     # 第一層：強勢股掃描
     # 先用免歷史資料的條件粗篩（漲幅、成交金額），只對少數候選股抓歷史股價算量能倍數，
@@ -210,13 +213,26 @@ def run_evening() -> None:
         db.save_judgment(today, dh["code"], dh["name"], "", "",
                          "dark_horse", dh.get("close", 0), market.get("taiex_close", 0))
 
-    # 技術分析：只對入選個股跑，省算力
-    candidates = {s["code"]: s["name"] for t in themes_raw for s in t.get("stocks", [])}
+    # 技術分析：只對入選個股跑，省算力。
+    # 候選股優先抓「持續被追蹤的活躍題材」龍頭股（例如散熱題材連燒好幾天，
+    # 就抓奇鋐、雙鴻這種代表股），而不是只看今天當下這次聚類剛好分到誰；
+    # 今天新聚類出來的題材股、黑馬則補在後面，維持新鮮訊號也看得到。
+    active_themes = _safe(lambda: db.list_themes("active"), [], "活躍題材清單")
+    persistent_leaders = {}
+    for t in active_themes:
+        if t.get("update_count", 1) < 2:   # 只算追蹤過一次以上、有持續性的題材
+            continue
+        for s in render.decorate_theme(t).get("stocks", [])[:2]:   # 每個題材取前 2 檔當代表
+            if s.get("code"):
+                persistent_leaders[s["code"]] = s.get("name", "")
+
+    candidates = dict(persistent_leaders)
+    candidates.update({s["code"]: s["name"] for t in themes_raw for s in t.get("stocks", [])})
     candidates.update({dh["code"]: dh["name"] for dh in dark_horses})
     watch_codes = {w["code"] for w in cfg["watchlist"]}
 
     technicals = []
-    for code, name in list(candidates.items())[:12]:
+    for code, name in list(candidates.items())[:16]:
         hist = _safe(lambda c=code: twse.fetch_stock_history(c, cfg["technical"]["lookback_days"]),
                      [], f"{code} 歷史股價")
         result = technical.analyze_stock(code, hist, cfg)
@@ -254,8 +270,7 @@ def run_evening() -> None:
         "commentary": commentary,
         "inst_chart": inst_chart,
         "index_cards": index_cards,
-        "inst_ranking_buy": inst_ranking_buy,
-        "inst_ranking_sell": inst_ranking_sell,
+        "inst_ranking": inst_ranking,
     }
 
     path = render.render_daily(ctx, f"{today}-evening")

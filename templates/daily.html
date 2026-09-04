@@ -103,7 +103,10 @@
   .news-item:last-child{border-bottom:none;}
   .news-item .news-source{color:var(--text-muted); font-size:12.5px; margin-right:8px;}
 
-  .rank-sub{font-size:13px; color:var(--gold); margin:16px 0 8px;}
+  .rank-group-label{font-family:'Noto Serif TC',serif; font-weight:600; font-size:15px;
+                    margin:24px 0 4px; padding-top:16px; border-top:1px solid var(--hairline);}
+  .rank-group-label:first-of-type{margin-top:0; padding-top:0; border-top:none;}
+  .rank-sub{font-size:13px; color:var(--gold); margin:14px 0 8px;}
   .rank-sub:first-child{margin-top:0;}
   .rank-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
   .rank-table td{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
@@ -128,6 +131,17 @@
   </div>
   {% if c.spark %}<div class="idx-card-spark">{{ c.spark }}</div>{% endif %}
 </div>
+{% endmacro %}
+
+{% macro rank_table(rows) %}
+<table class="rank-table">
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.code }} {{ r.name }}{% if r.is_etf %}<span class="rank-etf-tag">ETF</span>{% endif %}</td>
+    <td class="{{ 'up' if r.net >= 0 else 'down' }}">{{ '+' if r.net >= 0 else '' }}{{ "{:,.0f}".format(r.net) }} 股</td>
+  </tr>
+  {% endfor %}
+</table>
 {% endmacro %}
 
 {% block content %}
@@ -283,31 +297,22 @@
 <hr class="divider">
 {% endif %}
 
-{% if inst_ranking_buy or inst_ranking_sell %}
+{% if inst_ranking %}
 <section class="block">
   <h2>個股三大法人買賣超排名</h2>
-  {% if inst_ranking_buy %}
-  <div class="rank-sub">買超前 {{ inst_ranking_buy|length }} 名</div>
-  <table class="rank-table">
-    {% for r in inst_ranking_buy %}
-    <tr>
-      <td>{{ r.code }} {{ r.name }}{% if r.is_etf %}<span class="rank-etf-tag">ETF</span>{% endif %}</td>
-      <td class="{{ 'up' if r.total_net >= 0 else 'down' }}">{{ '+' if r.total_net >= 0 else '' }}{{ "{:,.0f}".format(r.total_net) }} 股</td>
-    </tr>
-    {% endfor %}
-  </table>
+  {% for label, buy_key, sell_key in [('外資', 'foreign_buy', 'foreign_sell'), ('投信', 'trust_buy', 'trust_sell'), ('自營商', 'dealer_buy', 'dealer_sell')] %}
+  {% if inst_ranking.get(buy_key) or inst_ranking.get(sell_key) %}
+  <div class="rank-group-label">{{ label }}</div>
+  {% if inst_ranking.get(buy_key) %}
+  <div class="rank-sub">買超前 {{ inst_ranking[buy_key]|length }} 名</div>
+  {{ rank_table(inst_ranking[buy_key]) }}
   {% endif %}
-  {% if inst_ranking_sell %}
-  <div class="rank-sub">賣超前 {{ inst_ranking_sell|length }} 名</div>
-  <table class="rank-table">
-    {% for r in inst_ranking_sell %}
-    <tr>
-      <td>{{ r.code }} {{ r.name }}{% if r.is_etf %}<span class="rank-etf-tag">ETF</span>{% endif %}</td>
-      <td class="{{ 'up' if r.total_net >= 0 else 'down' }}">{{ '+' if r.total_net >= 0 else '' }}{{ "{:,.0f}".format(r.total_net) }} 股</td>
-    </tr>
-    {% endfor %}
-  </table>
+  {% if inst_ranking.get(sell_key) %}
+  <div class="rank-sub">賣超前 {{ inst_ranking[sell_key]|length }} 名</div>
+  {{ rank_table(inst_ranking[sell_key]) }}
   {% endif %}
+  {% endif %}
+  {% endfor %}
 </section>
 <hr class="divider">
 {% endif %}
