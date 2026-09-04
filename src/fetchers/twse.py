@@ -53,17 +53,28 @@ def fetch_index_summary() -> dict:
         for row in rows:
             name = row.get("指數") or row.get("Name") or ""
             if "發行量加權股價指數" in name and "報酬" not in name:
+                # 注意：TWSE 的「漲跌點數」本身不帶正負號，方向另外放在「漲跌」欄位
+                # （"+"／"-"）。之前沒處理這個，導致 taiex_change 永遠是正的，
+                # 跟正確帶號的「漲跌百分比」對不起來（例如下跌時顯示紅色▲卻搭配負百分比）。
+                direction = (row.get("漲跌") or row.get("Direction") or "").strip()
+                sign = -1 if direction == "-" else 1
                 result["taiex_close"] = _num(row.get("收盤指數") or row.get("ClosingIndex"))
-                result["taiex_change"] = _num(row.get("漲跌點數") or row.get("Change"))
+                result["taiex_change"] = sign * _num(row.get("漲跌點數") or row.get("Change"))
                 result["taiex_change_pct"] = _num(row.get("漲跌百分比") or row.get("ChangePercent"))
                 break
 
-    breadth = _get("/exchangeReport/MI_INDEX20")
-    if breadth:
-        result["advancers"] = sum(1 for r in breadth if str(r.get("漲跌", "")).startswith("+"))
-        result["decliners"] = sum(1 for r in breadth if str(r.get("漲跌", "")).startswith("-"))
+    # 漲跌家數不能用 MI_INDEX20（那是「成交量前 20 名個股」，只有 20 檔，
+    # 不是全市場漲跌家數統計）。改由呼叫端用 fetch_daily_quotes() 的結果
+    # 透過 compute_breadth() 算，避免多打一次不對的 API。
 
     return result or mock.index_summary()
+
+
+def compute_breadth(quotes: list[dict]) -> dict:
+    """從全市場個股行情算漲跌家數（涨/跌，平盤不計入任一邊）。"""
+    advancers = sum(1 for q in quotes if q.get("change", 0) > 0)
+    decliners = sum(1 for q in quotes if q.get("change", 0) < 0)
+    return {"advancers": advancers, "decliners": decliners}
 
 
 def fetch_institutional_net() -> dict:

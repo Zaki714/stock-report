@@ -14,12 +14,52 @@
   .entry a:hover{color:var(--gold);}
   .entry .date{font-family:'JetBrains Mono',monospace; color:var(--text-muted);
                font-size:13px; flex-shrink:0;}
+
+  .today-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:28px 0;}
+  .today-card{background:var(--surface); border-radius:8px; padding:20px 22px;}
+  .today-card .tc-label{font-size:12.5px; color:var(--gold); margin-bottom:8px;}
+  .today-card .tc-title{font-family:'Noto Serif TC',serif; font-size:17px; font-weight:600;}
+  .today-card a{color:var(--gold); text-decoration:none; font-size:13.5px;
+                display:inline-block; margin-top:10px;}
+  .today-card a:hover{text-decoration:underline;}
+  .today-card.pending{opacity:.5;}
+  .today-card.pending .tc-title{color:var(--text-muted); font-weight:400;}
+  @media (max-width:480px){.today-grid{grid-template-columns:1fr;}}
 {% endblock %}
 {% block content %}
 <header><div class="masthead-label">{{ site_title }}</div>
 <h1 class="masthead-date">每日市場分析</h1></header>
+
+<div class="today-card" style="margin-top:24px; margin-bottom:0"><div class="tc-label">今天 · {{ today_label }}</div></div>
+<div class="today-grid">
+  {% if today_reports.get('morning') %}
+  <div class="today-card">
+    <div class="tc-label">早報</div>
+    <div class="tc-title">已產出</div>
+    <a href="{{ today_reports.morning.path }}">閱讀早報 →</a>
+  </div>
+  {% else %}
+  <div class="today-card pending">
+    <div class="tc-label">早報</div>
+    <div class="tc-title">尚未產出</div>
+  </div>
+  {% endif %}
+  {% if today_reports.get('evening') %}
+  <div class="today-card">
+    <div class="tc-label">盤後</div>
+    <div class="tc-title">已產出</div>
+    <a href="{{ today_reports.evening.path }}">閱讀盤後報告 →</a>
+  </div>
+  {% else %}
+  <div class="today-card pending">
+    <div class="tc-label">盤後</div>
+    <div class="tc-title">尚未產出</div>
+  </div>
+  {% endif %}
+</div>
+
 {% if latest %}
-<div class="latest-card" style="margin-top:28px">
+<div class="latest-card">
   <div class="lc-label">最新報告</div>
   <div class="lc-title">{{ latest.date_label }}　{{ latest.kind }}</div>
   <a href="{{ latest.path }}">閱讀完整報告 →</a>

@@ -161,6 +161,7 @@ def _collect_reports() -> list[dict]:
             "path": f"reports/{f.name}",
             "date": iso,
             "kind": kind,
+            "kind_key": kind_key,
             "title": f"{date_label(iso)}　{kind}",
             "date_label": date_label(iso),
         })
@@ -172,12 +173,22 @@ def render_index() -> Path:
     reports = _collect_reports()
     themes = [decorate_theme(t) for t in db.list_themes("active")]
 
+    today = now_tpe().strftime("%Y-%m-%d")
+    # 早報／晚報同時列出來，不是只給「最新一份」——早報跑完的時候，
+    # 使用者應該還是要能直接點進去看，不用等晚報覆蓋掉才找得到。
+    today_reports = {
+        r["kind_key"]: r for r in reports
+        if r["date"] == today and r["kind_key"] in ("morning", "evening")
+    }
+
     DOCS_DIR.mkdir(parents=True, exist_ok=True)
     path = DOCS_DIR / "index.html"
     path.write_text(_env().get_template("index.html").render(
         site_title=cfg["site"]["title"],
         generated_at=now_tpe().strftime("%Y-%m-%d %H:%M"),
         rel="",
+        today_label=date_label(today),
+        today_reports=today_reports,
         latest=reports[0] if reports else None,
         recent_reports=reports[:15],
         active_themes=themes[:10],

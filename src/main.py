@@ -112,6 +112,12 @@ def run_evening() -> None:
     calls = _safe(lambda: mops.fetch_earnings_calls(), [], "法說會")
     otc = _safe(tpex.fetch_otc_index, {}, "櫃買指數")
 
+    # 漲跌家數不能用 MI_INDEX20（那份資料只有「成交量前 20 名」），改從
+    # 已經抓到的全市場個股行情直接算，DRY_RUN 也一併算過，跟假資料的
+    # advancers/decliners 保持一致（避免兩邊各算各的）。
+    if quotes:
+        market.update(twse.compute_breadth(quotes))
+
     if market:
         db.save_market_snapshot(today, {**market, **inst})
 
@@ -229,6 +235,17 @@ def run_evening() -> None:
     candidates = dict(persistent_leaders)
     candidates.update({s["code"]: s["name"] for t in themes_raw for s in t.get("stocks", [])})
     candidates.update({dh["code"]: dh["name"] for dh in dark_horses})
+
+    # 題材聚類跟黑馬當天可能就是很少（LLM 找到的題材、孤立訊號本來就會有天數差異），
+    # 名單太短就沒東西可看。用今天的強勢股掃描結果（已依量能*漲幅排序）補到至少
+    # MIN_TECHNICALS 檔，這些原本就是當天客觀上最強勢的個股，不是隨便湊數。
+    MIN_TECHNICALS = 8
+    if len(candidates) < MIN_TECHNICALS:
+        for s in strong:
+            if len(candidates) >= MIN_TECHNICALS:
+                break
+            candidates.setdefault(s["code"], s.get("name", ""))
+
     watch_codes = {w["code"] for w in cfg["watchlist"]}
 
     technicals = []
