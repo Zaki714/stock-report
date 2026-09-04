@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ site_title }} · 長假彙整 · {{ date_label }}{% endblock %}
+
+{% block extra_css %}
+  .masthead-sub{font-size:14px; color:var(--text-secondary); margin-top:6px;}
+  .idx-card{border-left:2px solid var(--gold); padding:4px 0 12px 18px; margin-bottom:24px;}
+  .idx-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px;}
+  .idx-name{font-family:'Noto Serif TC',serif; font-weight:600; font-size:17px;}
+  .idx-total{font-family:'JetBrains Mono',monospace; font-size:15px;}
+  .idx-table{width:100%; border-collapse:collapse; margin-top:10px;}
+  .idx-table th{text-align:right; font-size:11.5px; font-weight:400; color:var(--text-muted);
+                padding-bottom:6px; border-bottom:1px solid var(--hairline);}
+  .idx-table th:first-child{text-align:left;}
+  .idx-table td{padding:7px 0; border-bottom:1px solid var(--hairline);
+                font-size:13px; text-align:right; font-family:'JetBrains Mono',monospace;}
+  .idx-table td:first-child{text-align:left;}
+  .idx-table tr:last-child td{border-bottom:none;}
+  .theme-mini{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .theme-mini:last-child{border-bottom:none;}
+  .theme-mini .tm-meta{color:var(--text-muted); font-size:12.5px;}
+{% endblock %}
+
+{% block content %}
+<header>
+  <div class="masthead-label">{{ site_title }} · {{ report_kind }}</div>
+  <h1 class="masthead-date">{{ date_label }}</h1>
+  <div class="masthead-sub">{{ commentary }}</div>
+</header>
+
+<hr class="divider">
+
+{% if index_charts %}
+<section class="block">
+  <h2>休市期間國際盤逐日變化</h2>
+  {% for idx in index_charts %}
+  <div class="idx-card">
+    <div class="idx-head">
+      <span class="idx-name">{{ idx.name }}</span>
+      <span class="idx-total {{ 'up' if idx.total_change >= 0 else 'down' }}">
+        區間 {{ "%+.2f"|format(idx.total_change) }}%</span>
+    </div>
+    {% if idx.chart %}<div style="margin:8px 0">{{ idx.chart }}</div>{% endif %}
+    <table class="idx-table">
+      <tr><th>日期</th><th>收盤</th><th>單日</th></tr>
+      {% for r in idx.rows %}
+      <tr>
+        <td>{{ r.date }}</td>
+        <td>{{ "{:,.2f}".format(r.close) }}</td>
+        <td class="{{ 'up' if r.change_pct >= 0 else 'down' }}">{{ "%+.2f"|format(r.change_pct) }}%</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</section>
+<hr class="divider">
+{% else %}
+<section class="block">
+  <p class="commentary">休市期間國際盤資料擷取失敗，開盤前請自行確認。</p>
+</section>
+<hr class="divider">
+{% endif %}
+
+{% if themes %}
+<section class="block">
+  <h2>追蹤中題材（開盤前複習）</h2>
+  {% for t in themes %}
+  <div class="theme-mini">
+    {{ t.name }}
+    <span class="tm-meta">　{{ t.scope_label }} · 信心度 {{ t.confidence_label }} · 最後訊號 {{ t.last_signal_date }}</span>
+  </div>
+  {% endfor %}
+</section>
+<hr class="divider">
+{% endif %}
+
+<section class="block">
+  <p class="commentary">下一個交易日：{{ next_open }}。</p>
+</section>
+{% endblock %}

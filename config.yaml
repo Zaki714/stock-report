@@ -1,0 +1,82 @@
+# ── 盤後快訊系統設定檔 ────────────────────────────────
+# 這個檔案是你日常唯一需要修改的地方，程式邏輯不用動。
+
+site:
+  title: "盤後快訊"
+  # GitHub Pages 網址，部署後填入，例如 https://yourname.github.io/stock-report
+  base_url: ""
+  timezone: "Asia/Taipei"
+
+# ── 你的自選股 ──────────────────────────────────────
+# 出現在題材/技術面/黑馬名單時，會被標記並置頂到報告最前面
+watchlist:
+  - code: "2330"
+    name: "台積電"
+  - code: "2317"
+    name: "鴻海"
+  - code: "2454"
+    name: "聯發科"
+
+# ── 強勢股掃描門檻 ──────────────────────────────────
+screener:
+  min_change_pct: 4.0        # 漲幅門檻（%）
+  min_volume_ratio: 2.0      # 成交量須為 20 日均量的幾倍
+  min_turnover: 100000000    # 最低成交金額（元），濾掉冷門股
+  top_n: 30                  # 最多取幾檔進入題材分析
+
+# ── 黑馬判定 ────────────────────────────────────────
+dark_horse:
+  volume_ratio: 3.0          # 量能倍數超過此值視為異常
+  max_peers: 1               # 同題材呼應個股數 <= 此值視為孤立訊號
+
+# ── 題材知識庫退場機制 ──────────────────────────────
+theme_lifecycle:
+  dormant_after_days: 7      # 連續 N 個交易日無新訊號 → 休眠
+  archive_after_declines: 3  # 信心度連續下滑 N 次且已達低檔 → 退場
+  deep_dive_min_days: 3      # 追蹤滿 N 天且信心度中高以上 → 產出深度報告
+
+# ── 事後驗證 ────────────────────────────────────────
+review:
+  horizons_days: [14, 30]    # 回頭檢查 N 天前的判斷準不準
+
+# ── 技術分析 ────────────────────────────────────────
+technical:
+  lookback_days: 120         # 抓多久的日 K 來算指標
+  ma_periods: [5, 20, 60]
+  rsi_overbought: 70
+  rsi_oversold: 30
+
+# ── 國際題材追蹤 ────────────────────────────────────
+# 併入每日早報。抓財經頭條 + 類股 ETF 資金流向，用 LLM 歸納當週當紅題材，
+# 與台股題材寫進同一個知識庫（scope='intl'）。
+global_themes:
+  enabled: true
+  # Google News RSS 查詢字串（免費、免申請），逐條抓再合併去重
+  news_queries:
+    - "semiconductor OR AI chip demand"
+    - "US technology stocks rally OR selloff"
+    - "Federal Reserve rate decision"
+    - "AI datacenter capex"
+  # 類股 ETF：用價格動能與量能倍數當資金流向的近似值（免費資料源沒有真實 fund flow）
+  sector_etfs:
+    - { symbol: "xlk.us", name: "科技 XLK" }
+    - { symbol: "smh.us", name: "半導體 SMH" }
+    - { symbol: "xlf.us", name: "金融 XLF" }
+    - { symbol: "xle.us", name: "能源 XLE" }
+  max_headlines: 40           # 丟給 LLM 的頭條上限，控制 token 用量
+
+# ── 週報 ────────────────────────────────────────────
+# 不獨立開排程：台股週五 13:30 收但美股週五晚上才交易，
+# 週五發的週報會漏掉整個美股交易日。改成併入「當週第一個交易日」的早報。
+weekly:
+  enabled: true
+
+# ── LLM ─────────────────────────────────────────────
+llm:
+  model: "claude-sonnet-4-6"
+  max_tokens: 4000
+  # API key 走環境變數 ANTHROPIC_API_KEY，不要寫在這個檔案裡
+
+# ── 通知 ────────────────────────────────────────────
+notify:
+  telegram_enabled: true     # TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 走環境變數

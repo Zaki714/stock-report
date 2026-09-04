@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{ site_title }} · {{ month_label }} 月報{% endblock %}
+
+{% block extra_css %}
+  .masthead-sub{font-size:14px; color:var(--text-secondary); margin-top:6px;}
+  .score-card{background:var(--surface); border-radius:8px; padding:20px 22px; margin-bottom:20px;}
+  .score-card h3{font-family:'Noto Serif TC',serif; font-size:17px; font-weight:600; margin-bottom:12px;}
+  .score-table{width:100%; border-collapse:collapse; margin-bottom:12px;}
+  .score-table th{text-align:right; font-size:12px; font-weight:400; color:var(--text-muted);
+                  padding-bottom:8px; border-bottom:1px solid var(--hairline);}
+  .score-table th:first-child{text-align:left;}
+  .score-table td{padding:9px 0; border-bottom:1px solid var(--hairline);
+                  font-size:14px; text-align:right; font-family:'JetBrains Mono',monospace;}
+  .score-table td:first-child{text-align:left; font-family:'Noto Sans TC',sans-serif;}
+  .score-table tr:last-child td{border-bottom:none;}
+  .score-verdict{font-size:14px; color:var(--text-secondary); line-height:1.7;}
+  .dist-row{display:flex; align-items:center; gap:12px; margin-bottom:8px; font-size:14px;}
+  .dist-row .dr-name{width:64px; color:var(--text-secondary);}
+  .dist-row .dr-track{flex:1; height:8px; background:var(--surface-2); border-radius:4px; overflow:hidden;}
+  .dist-row .dr-fill{height:100%; background:var(--gold);}
+  .dist-row .dr-n{width:40px; text-align:right; font-family:'JetBrains Mono',monospace;}
+  .theme-list{margin-top:6px;}
+  .theme-list .tl-item{display:flex; justify-content:space-between; gap:12px; padding:10px 0;
+                       border-bottom:1px solid var(--hairline); font-size:14px;}
+  .theme-list .tl-item:last-child{border-bottom:none;}
+  .theme-list .tl-meta{color:var(--text-muted); font-size:12.5px;}
+{% endblock %}
+
+{% block content %}
+<header>
+  <div class="masthead-label">{{ site_title }} · {{ report_kind }}</div>
+  <h1 class="masthead-date">{{ month_label }}</h1>
+  <div class="masthead-sub">回頭檢查過去的判斷準不準——核心指標是超額報酬（個股報酬 − 大盤同期報酬）。</div>
+</header>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>事後驗證成績單</h2>
+  {% if scorecards %}
+    {% for sc in scorecards %}
+    <div class="score-card">
+      <h3>{{ sc.horizon }} 天回顧　<span style="font-weight:400; color:var(--text-muted); font-size:13px">本次新驗證 {{ sc.reviewed }} 筆</span></h3>
+      {% if sc.rows %}
+      <table class="score-table">
+        <tr><th>信心度</th><th>樣本數</th><th>平均超額報酬</th><th>勝率</th></tr>
+        {% for r in sc.rows %}
+        <tr>
+          <td>{{ {'high':'高','mid':'中高','low':'低'}.get(r.confidence, r.confidence) }}</td>
+          <td>{{ r.n }}</td>
+          <td class="{{ 'up' if (r.avg_excess or 0) >= 0 else 'down' }}">{{ "%+.2f"|format(r.avg_excess or 0) }}%</td>
+          <td>{{ r.win_rate }}%</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      <p class="score-verdict">{{ sc.verdict }}</p>
+    </div>
+    {% endfor %}
+  {% else %}
+  <p class="commentary">尚無足夠驗證樣本，需再累積一段時間。</p>
+  {% endif %}
+</section>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>本月題材增減</h2>
+  {% if themes_added %}
+  <div style="font-size:13px; color:var(--gold); margin-bottom:6px">新增建檔</div>
+  <div class="theme-list">
+    {% for t in themes_added %}
+    <div class="tl-item">
+      <span>{{ t.name }}<span class="tl-meta">　{{ t.scope_label }}</span></span>
+      <span class="tl-meta">{{ t.first_seen }} 建檔 · 更新 {{ t.update_count }} 次</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if themes_retired %}
+  <div style="font-size:13px; color:var(--text-muted); margin:16px 0 6px">轉休眠／退場</div>
+  <div class="theme-list">
+    {% for t in themes_retired %}
+    <div class="tl-item">
+      <span>{{ t.name }}<span class="tl-meta">　{{ t.scope_label }}</span></span>
+      <span class="tl-meta">最後訊號 {{ t.last_signal_date }} · {{ t.status }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if not themes_added and not themes_retired %}
+  <p class="commentary">本月題材知識庫無明顯增減。</p>
+  {% endif %}
+</section>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>追蹤中題材信心度分布</h2>
+  {% if confidence_dist %}
+    {% set total = confidence_dist | sum(attribute='n') %}
+    {% for d in confidence_dist %}
+    <div class="dist-row">
+      <span class="dr-name">{{ {'high':'高','mid':'中高','low':'低'}.get(d.confidence, d.confidence) }}</span>
+      <span class="dr-track"><span class="dr-fill" style="width:{{ (d.n / total * 100)|round(0) if total else 0 }}%"></span></span>
+      <span class="dr-n">{{ d.n }}</span>
+    </div>
+    {% endfor %}
+  {% else %}
+  <p class="commentary">目前沒有追蹤中的題材。</p>
+  {% endif %}
+</section>
+{% endblock %}
