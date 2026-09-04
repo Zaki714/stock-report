@@ -67,24 +67,47 @@ def fetch_index_summary() -> dict:
 
 
 def fetch_institutional_net() -> dict:
-    """三大法人買賣超（單位：億元）。18:00 才抓的主因就是等這份資料落地。"""
+    """三大法人買賣超（單位：億元）。18:00 才抓的主因就是等這份資料落地。
+
+    注意：這個資料集在新版 openapi.twse.com.tw 已經下架（/fund/BFI82U 回 404），
+    改走舊版 www.twse.com.tw 的端點，回傳格式跟 fetch_stock_history 一樣是
+    {"stat": "OK", "fields": [...], "data": [[...], ...]}，用 fields 對應欄位名。
+    """
     if DRY_RUN:
         return mock.institutional_net()
 
-    rows = _get("/fund/BFI82U")
-    if not rows:
+    try:
+        resp = requests.get(
+            "https://www.twse.com.tw/fund/BFI82U",
+            params={"response": "json"}, headers=HEADERS, timeout=TIMEOUT,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+    except Exception as exc:
+        print(f"[twse] 三大法人買賣超擷取失敗：{exc}")
         return {}
 
+    if payload.get("stat") != "OK":
+        return {}
+
+    fields = payload.get("fields", [])
     out = {"foreign_net": 0.0, "trust_net": 0.0, "dealer_net": 0.0}
-    for row in rows:
-        name = row.get("單位名稱") or row.get("Name") or ""
-        net = _num(row.get("買賣差額") or row.get("Difference")) / 1e8   # 元 → 億
-        if "外資" in name and "自營" not in name:
+    for row in payload.get("data", []):
+        r = dict(zip(fields, row))
+        name = r.get("單位名稱", "")
+        net = _num(r.get("買賣差額")) / 1e8   # 元 → 億
+        # 注意：用 startswith 而不是「in」——實際類別名稱「外資及陸資(不含外資自營商)」
+        # 因為括號註記剛好包含「自營」兩個字，若用子字串比對「"自營" not in name」
+        # 會被這段括號說明誤判，把整筆外資買賣超歸類到自營商。
+        # 自營商拆成「自行買賣」「避險」「外資自營商」三列，全部歸進 dealer_net；
+        # 「外資及陸資(不含外資自營商)」才算 foreign_net，避免跟自營商重複計算。
+        if name.startswith("自營商") or name.startswith("外資自營商"):
+            out["dealer_net"] += net
+        elif name.startswith("外資"):
             out["foreign_net"] += net
         elif "投信" in name:
             out["trust_net"] += net
-        elif "自營" in name:
-            out["dealer_net"] += net
+        # 其餘（例如「合計」列）不歸類，避免重複計算
     out["total_net"] = sum(out.values())
     return out
 
