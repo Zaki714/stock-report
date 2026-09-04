@@ -85,6 +85,20 @@ CREATE TABLE IF NOT EXISTS market_snapshots (
     payload       TEXT                   -- 完整 JSON，保留彈性
 );
 
+-- 指數走勢快照：加權指數／櫃買指數 每日收盤，用來畫卡片底下的迷你走勢線。
+-- 台股指數的免費 API 只給最近幾個交易日的滾動視窗，沒有長期歷史可以一次拉，
+-- 所以自己每天存一筆，跑越久走勢線越長。國際指數／ADR 因為 yfinance 一次能拿
+-- 一個月歷史，不需要靠這張表累積，只有 taiex／otc 會用到。
+CREATE TABLE IF NOT EXISTS index_snapshots (
+    date          TEXT NOT NULL,
+    symbol        TEXT NOT NULL,         -- 'taiex' / 'otc'
+    name          TEXT,
+    close         REAL,
+    change        REAL,
+    change_pct    REAL,
+    PRIMARY KEY (date, symbol)
+);
+
 CREATE INDEX IF NOT EXISTS idx_theme_updates_date ON theme_updates(date);
 CREATE INDEX IF NOT EXISTS idx_snapshots_date ON judgment_snapshots(date);
 CREATE INDEX IF NOT EXISTS idx_themes_status ON themes(status);
@@ -348,5 +362,29 @@ def snapshots_between(start: str, end: str) -> list[dict]:
         rows = conn.execute(
             "SELECT * FROM market_snapshots WHERE date BETWEEN ? AND ? ORDER BY date",
             (start, end),
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+
+# ── 指數走勢快照（卡片迷你走勢線用） ──────────────────
+def save_index_snapshot(today: str, symbol: str, name: str, close: float,
+                        change: float, change_pct: float) -> None:
+    with get_conn() as conn:
+        conn.execute(
+            """INSERT OR REPLACE INTO index_snapshots
+               (date, symbol, name, close, change, change_pct)
+               VALUES (?,?,?,?,?,?)""",
+            (today, symbol, name, close, change, change_pct),
+        )
+
+
+def index_series(symbol: str, days: int = 30) -> list[dict]:
+    """某個指數最近 N 天的收盤序列，由舊到新排序，畫走勢線用。"""
+    with get_conn() as conn:
+        rows = conn.execute(
+            """SELECT * FROM (
+                   SELECT * FROM index_snapshots WHERE symbol=? ORDER BY date DESC LIMIT ?
+               ) ORDER BY date""",
+            (symbol, days),
         ).fetchall()
         return [dict(r) for r in rows]

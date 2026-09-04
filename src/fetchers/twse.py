@@ -112,6 +112,53 @@ def fetch_institutional_net() -> dict:
     return out
 
 
+def fetch_institutional_ranking() -> list[dict]:
+    """個股（含 ETF）三大法人買賣超排名（上市，單位：股）。
+
+    來源是舊版 www.twse.com.tw/fund/T86，格式跟 fetch_stock_history 一樣是
+    stat/fields/data 陣列。回傳依「三大法人買賣超股數」由大到小排序的清單，
+    呼叫端自行取排名前後幾名（買超前 N、賣超前 N）。
+    """
+    if DRY_RUN:
+        return mock.institutional_ranking()
+
+    try:
+        resp = requests.get(
+            "https://www.twse.com.tw/fund/T86",
+            params={"response": "json", "date": date.today().strftime("%Y%m%d"),
+                    "selectType": "ALLBUT0999"},
+            headers=HEADERS, timeout=TIMEOUT,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+    except Exception as exc:
+        print(f"[twse] 個股三大法人排名擷取失敗：{exc}")
+        return []
+
+    if payload.get("stat") != "OK":
+        return []
+
+    fields = payload.get("fields", [])
+    out = []
+    for row in payload.get("data", []):
+        r = dict(zip(fields, row))
+        code = (r.get("證券代號") or "").strip()
+        name = (r.get("證券名稱") or "").strip()
+        if not code:
+            continue
+        out.append({
+            "code": code, "name": name,
+            "is_etf": code.startswith("00"),   # 給模板選擇性標示用，不做過濾
+            "foreign_net": _num(r.get("外陸資買賣超股數(不含外資自營商)")),
+            "trust_net": _num(r.get("投信買賣超股數")),
+            "dealer_net": _num(r.get("自營商買賣超股數")),
+            "total_net": _num(r.get("三大法人買賣超股數")),
+        })
+
+    out.sort(key=lambda x: x["total_net"], reverse=True)
+    return out
+
+
 def fetch_daily_quotes() -> list[dict]:
     """全上市個股當日行情，強勢股掃描的原料。"""
     if DRY_RUN:

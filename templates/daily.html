@@ -90,11 +90,45 @@
   .weekly-grid .wg-label{color:var(--text-muted);}
   .weekly-grid .wg-value{font-family:'JetBrains Mono',monospace;}
 
+  .idx-card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                 gap:14px; margin-bottom:24px;}
+  .idx-card{background:var(--surface); border-radius:8px; padding:16px 18px;}
+  .idx-card-name{font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
+  .idx-card-close{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:500;}
+  .idx-card-change{font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:3px;}
+  .idx-card-spark{margin-top:8px; line-height:0;}
+  .idx-card-spark svg{width:100%; height:28px;}
+
+  .news-item{padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .news-item:last-child{border-bottom:none;}
+  .news-item .news-source{color:var(--text-muted); font-size:12.5px; margin-right:8px;}
+
+  .rank-sub{font-size:13px; color:var(--gold); margin:16px 0 8px;}
+  .rank-sub:first-child{margin-top:0;}
+  .rank-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rank-table td{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table td:last-child{text-align:right; font-family:'JetBrains Mono',monospace;}
+  .rank-etf-tag{font-size:10.5px; color:var(--text-muted); border:1px solid var(--hairline);
+                border-radius:4px; padding:1px 5px; margin-left:6px;}
+
   @media (max-width:480px){
     .hero-number{font-size:40px;}
     .stat-grid,.darkhorse-grid{grid-template-columns:1fr;}
+    .idx-card-grid{grid-template-columns:repeat(2,1fr);}
   }
 {% endblock %}
+
+{% macro index_card(c) %}
+<div class="idx-card">
+  <div class="idx-card-name">{{ c.name }}</div>
+  <div class="idx-card-close mono">{{ "{:,.2f}".format(c.close) }}</div>
+  <div class="idx-card-change mono {{ 'up' if c.change >= 0 else 'down' }}">
+    {{ '▲' if c.change >= 0 else '▼' }} {{ "%.2f"|format(c.change|abs) }}（{{ "%+.2f"|format(c.change_pct) }}%）
+  </div>
+  {% if c.spark %}<div class="idx-card-spark">{{ c.spark }}</div>{% endif %}
+</div>
+{% endmacro %}
 
 {% block content %}
 <header>
@@ -102,11 +136,14 @@
   <h1 class="masthead-date">{{ date_label }}</h1>
 </header>
 
+{% if index_cards %}
+<div class="idx-card-grid">
+  {% for c in index_cards %}{{ index_card(c) }}{% endfor %}
+</div>
+{% endif %}
+
 {% if market %}
 <section class="hero">
-  <div class="hero-eyebrow">加權指數</div>
-  <span class="hero-number mono">{{ "{:,.2f}".format(market.taiex_close) }}</span><span
-    class="hero-change mono {{ 'up' if market.taiex_change >= 0 else 'down' }}">{{ '▲' if market.taiex_change >= 0 else '▼' }} {{ "{:,.2f}".format(market.taiex_change|abs) }}（{{ market.taiex_change_pct }}%）</span>
   <div class="hero-stats">
     {% if market.turnover %}
     <div class="stat-item"><span class="label">成交值</span>
@@ -165,16 +202,25 @@
 {% if international %}
 <section class="block">
   <h2>國際盤摘要</h2>
+  {% if international.indices %}
+  <div class="idx-card-grid">
+    {% for c in international.indices %}{{ index_card(c) }}{% endfor %}
+  </div>
+  {% endif %}
+  {% if international.adrs %}
+  <div class="stat-label" style="margin-bottom:10px">海外 ADR</div>
+  <div class="idx-card-grid">
+    {% for c in international.adrs %}{{ index_card(c) }}{% endfor %}
+  </div>
+  {% endif %}
+  {% if international.macro %}
   <div class="stat-grid">
-    {% for idx in international.indices %}
-    <div class="stat"><span class="stat-label">{{ idx.name }}</span>
-      <span class="stat-value {{ 'up' if idx.change_pct >= 0 else 'down' }}">{{ "{:,.0f}".format(idx.close) }} {{ "%+.2f"|format(idx.change_pct) }}%</span></div>
-    {% endfor %}
     {% for m in international.macro %}
     <div class="stat"><span class="stat-label">{{ m.name }}</span>
       <span class="stat-value mono">{{ m.value }}</span></div>
     {% endfor %}
   </div>
+  {% endif %}
   {% if intl_commentary %}<p class="commentary">{{ intl_commentary }}</p>{% endif %}
 </section>
 <hr class="divider">
@@ -205,6 +251,18 @@
 <hr class="divider">
 {% endif %}
 
+{% if tw_news %}
+<section class="block">
+  <h2>台股早報重點新聞</h2>
+  {% for n in tw_news %}
+  <div class="news-item">
+    <span class="news-source">{{ n.source }}</span>{{ n.title }}
+  </div>
+  {% endfor %}
+</section>
+<hr class="divider">
+{% endif %}
+
 {% if inst %}
 <section class="block">
   <h2>三大法人動向</h2>
@@ -221,6 +279,35 @@
   {% if inst_chart %}<div class="chart-wrap">{{ inst_chart }}</div>
   <p class="commentary" style="font-size:12.5px; color:var(--text-muted)">近半月外資單日買賣超（億元），紅為買超、綠為賣超。</p>{% endif %}
   {% if commentary %}<p class="commentary" style="margin-top:14px">{{ commentary }}</p>{% endif %}
+</section>
+<hr class="divider">
+{% endif %}
+
+{% if inst_ranking_buy or inst_ranking_sell %}
+<section class="block">
+  <h2>個股三大法人買賣超排名</h2>
+  {% if inst_ranking_buy %}
+  <div class="rank-sub">買超前 {{ inst_ranking_buy|length }} 名</div>
+  <table class="rank-table">
+    {% for r in inst_ranking_buy %}
+    <tr>
+      <td>{{ r.code }} {{ r.name }}{% if r.is_etf %}<span class="rank-etf-tag">ETF</span>{% endif %}</td>
+      <td class="{{ 'up' if r.total_net >= 0 else 'down' }}">{{ '+' if r.total_net >= 0 else '' }}{{ "{:,.0f}".format(r.total_net) }} 股</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% if inst_ranking_sell %}
+  <div class="rank-sub">賣超前 {{ inst_ranking_sell|length }} 名</div>
+  <table class="rank-table">
+    {% for r in inst_ranking_sell %}
+    <tr>
+      <td>{{ r.code }} {{ r.name }}{% if r.is_etf %}<span class="rank-etf-tag">ETF</span>{% endif %}</td>
+      <td class="{{ 'up' if r.total_net >= 0 else 'down' }}">{{ '+' if r.total_net >= 0 else '' }}{{ "{:,.0f}".format(r.total_net) }} 股</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
 </section>
 <hr class="divider">
 {% endif %}

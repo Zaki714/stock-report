@@ -79,21 +79,97 @@ def stock_history(code: str, days: int = 120) -> list[dict]:
     return rows
 
 
+def _fake_history(base: float, days: int = 22, drift: float = 0.0) -> list[float]:
+    """生一段假的收盤序列，給指數卡片的迷你走勢線用。"""
+    rows, price = [], base
+    for _ in range(days):
+        price *= (1 + drift + random.gauss(0, 0.008))
+        rows.append(round(price, 2))
+    return rows
+
+
+def _index_card(name: str, base: float, drift: float = 0.0) -> dict:
+    hist = _fake_history(base, drift=drift)
+    close, prev = hist[-1], hist[-2]
+    change = round(close - prev, 2)
+    return {
+        "name": name, "close": close, "change": change,
+        "change_pct": round(change / prev * 100, 2) if prev else 0.0,
+        "history": hist,
+    }
+
+
 def international_markets() -> dict:
     return {
         "indices": [
-            {"name": "道瓊", "close": 45218.0, "change_pct": -0.32},
-            {"name": "那斯達克", "close": 19864.0, "change_pct": 0.58},
-            {"name": "S&P 500", "close": 6142.0, "change_pct": 0.21},
-            {"name": "費半 SOX", "close": 5712.0, "change_pct": 1.24},
+            _index_card("道瓊", 45218.0, -0.001),
+            _index_card("那斯達克", 19864.0, 0.002),
+            _index_card("S&P 500", 6142.0, 0.001),
+            _index_card("費半 SOX", 5712.0, 0.003),
+        ],
+        "adrs": [
+            _index_card("台積電 ADR", 198.4, 0.002),
+            _index_card("聯電 ADR", 8.6, 0.001),
+            _index_card("日月光 ADR", 9.2, -0.001),
         ],
         "macro": [
-            {"name": "美元指數", "value": "102.4"},
-            {"name": "VIX", "value": "14.2"},
-            {"name": "10年美債殖利率", "value": "4.18%"},
-            {"name": "台積電 ADR", "value": "+1.1%"},
+            {"name": "美元指數", "value": "102.4（+0.12%）"},
+            {"name": "西德州原油", "value": "78.3（-0.45%）"},
+            {"name": "黃金", "value": "2,634.5（+0.30%）"},
         ],
     }
+
+
+def otc_index() -> dict:
+    hist = _fake_history(238.0, drift=0.0015)
+    close, prev = hist[-1], hist[-2]
+    change = round(close - prev, 2)
+    return {
+        "close": close, "change": change,
+        "change_pct": round(change / prev * 100, 2) if prev else 0.0,
+        "recent": [{"date": (date.today() - timedelta(days=i)).isoformat(),
+                    "close": c, "change": 0.0}
+                   for i, c in enumerate(reversed(hist[-4:]))],
+    }
+
+
+def institutional_ranking() -> list[dict]:
+    """DRY_RUN：個股三大法人買賣超排名。買超／賣超各給 12 檔，
+    數量刻意大於 config 預設的 top_n（10），避免排行榜前後兩段重疊。"""
+    buys = [("2330", "台積電"), ("2317", "鴻海"), ("2454", "聯發科"),
+            ("2303", "聯電"), ("3231", "緯創"), ("00878", "國泰永續高股息"),
+            ("2308", "台達電"), ("2382", "廣達"), ("3661", "世芯-KY"),
+            ("6669", "緯穎"), ("2412", "中華電"), ("2603", "長榮")]
+    sells = [("2327", "國巨"), ("2481", "強茂"), ("2409", "友達"),
+             ("6770", "力積電"), ("3481", "群創"), ("2834", "臺企銀"),
+             ("2610", "華航"), ("2618", "長榮航"), ("1216", "統一"),
+             ("2891", "中信金"), ("2882", "國泰金"), ("2884", "玉山金")]
+
+    out = []
+    for code, name in buys:
+        net = random.randint(2_000_000, 30_000_000)
+        out.append({"code": code, "name": name, "is_etf": code.startswith("00"),
+                    "foreign_net": net * 0.7, "trust_net": net * 0.1,
+                    "dealer_net": net * 0.2, "total_net": net})
+    for code, name in sells:
+        net = -random.randint(2_000_000, 30_000_000)
+        out.append({"code": code, "name": name, "is_etf": code.startswith("00"),
+                    "foreign_net": net * 0.7, "trust_net": net * 0.1,
+                    "dealer_net": net * 0.2, "total_net": net})
+
+    out.sort(key=lambda x: x["total_net"], reverse=True)
+    return out
+
+
+def tw_headlines() -> list[dict]:
+    return [
+        {"title": "台積電法說會釋樂觀展望，外資喊上看新高",
+         "source": "經濟日報", "published": "Fri, 04 Sep 2026 08:10:00", "link": "", "query": "台積電"},
+        {"title": "外資連三日買超台股，加權指數收復所有均線",
+         "source": "工商時報", "published": "Fri, 04 Sep 2026 07:50:00", "link": "", "query": "台股 大盤"},
+        {"title": "機器人減速機族群走強，法人點名這幾檔受惠",
+         "source": "MoneyDJ", "published": "Fri, 04 Sep 2026 07:30:00", "link": "", "query": "台股 大盤"},
+    ]
 
 
 def earnings_calls() -> list[dict]:
@@ -132,10 +208,10 @@ def global_headlines() -> list[dict]:
 def sector_etf_flows() -> list[dict]:
     """DRY_RUN：類股 ETF 的價格動能與量能倍數（資金流向近似值）。"""
     return [
-        {"name": "科技 XLK", "symbol": "xlk.us", "change_pct": 1.12, "volume_ratio": 1.34, "flow": "資金流入"},
-        {"name": "半導體 SMH", "symbol": "smh.us", "change_pct": 1.86, "volume_ratio": 1.52, "flow": "資金流入"},
-        {"name": "金融 XLF", "symbol": "xlf.us", "change_pct": -0.24, "volume_ratio": 0.92, "flow": "持平"},
-        {"name": "能源 XLE", "symbol": "xle.us", "change_pct": -0.71, "volume_ratio": 1.28, "flow": "資金流出"},
+        {"name": "科技 XLK", "symbol": "XLK", "change_pct": 1.12, "volume_ratio": 1.34, "flow": "資金流入"},
+        {"name": "半導體 SMH", "symbol": "SMH", "change_pct": 1.86, "volume_ratio": 1.52, "flow": "資金流入"},
+        {"name": "金融 XLF", "symbol": "XLF", "change_pct": -0.24, "volume_ratio": 0.92, "flow": "持平"},
+        {"name": "能源 XLE", "symbol": "XLE", "change_pct": -0.71, "volume_ratio": 1.28, "flow": "資金流出"},
     ]
 
 

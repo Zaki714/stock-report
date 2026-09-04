@@ -28,9 +28,9 @@ def _strip_html(text: str) -> str:
     return _TAG_RE.sub("", text or "").strip()
 
 
-def _fetch_query(query: str) -> list[dict]:
-    """抓單一查詢字串的 RSS 結果。"""
-    url = f"{RSS}?q={quote_plus(query)}&hl=en-US&gl=US&ceid=US:en"
+def _fetch_query(query: str, hl: str = "en-US", gl: str = "US", ceid: str = "US:en") -> list[dict]:
+    """抓單一查詢字串的 RSS 結果。hl/gl/ceid 控制語系與地區（台股新聞用 zh-TW/TW/TW:zh-Hant）。"""
+    url = f"{RSS}?q={quote_plus(query)}&hl={hl}&gl={gl}&ceid={ceid}"
     try:
         resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
         resp.raise_for_status()
@@ -56,15 +56,11 @@ def _fetch_query(query: str) -> list[dict]:
     return items
 
 
-def fetch_headlines(queries: list[str], limit: int = 40) -> list[dict]:
-    """逐條查詢再合併，用標題去重，回傳最新的 `limit` 則。"""
-    if DRY_RUN:
-        return mock.global_headlines()[:limit]
-
+def _merge(queries: list[str], limit: int, **locale) -> list[dict]:
     seen: set[str] = set()
     merged: list[dict] = []
     for q in queries:
-        for row in _fetch_query(q):
+        for row in _fetch_query(q, **locale):
             key = row["title"].lower()
             if key in seen:
                 continue
@@ -79,3 +75,17 @@ def fetch_headlines(queries: list[str], limit: int = 40) -> list[dict]:
 
     merged.sort(key=_sort_key, reverse=True)
     return merged[:limit]
+
+
+def fetch_headlines(queries: list[str], limit: int = 40) -> list[dict]:
+    """國際財經頭條（英文），逐條查詢再合併，用標題去重，回傳最新的 `limit` 則。"""
+    if DRY_RUN:
+        return mock.global_headlines()[:limit]
+    return _merge(queries, limit, hl="en-US", gl="US", ceid="US:en")
+
+
+def fetch_tw_headlines(queries: list[str], limit: int = 20) -> list[dict]:
+    """台股中文新聞，用法跟 fetch_headlines 一樣，只是換成台灣地區、繁中查詢。"""
+    if DRY_RUN:
+        return mock.tw_headlines()[:limit]
+    return _merge(queries, limit, hl="zh-TW", gl="TW", ceid="TW:zh-Hant")

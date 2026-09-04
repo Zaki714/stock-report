@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>盤後快訊 · 2026年9月4日．週五</title>
+<title>盤後快訊 · 2026年9月5日．週六</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -143,9 +143,32 @@
   .weekly-grid .wg-label{color:var(--text-muted);}
   .weekly-grid .wg-value{font-family:'JetBrains Mono',monospace;}
 
+  .idx-card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                 gap:14px; margin-bottom:24px;}
+  .idx-card{background:var(--surface); border-radius:8px; padding:16px 18px;}
+  .idx-card-name{font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
+  .idx-card-close{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:500;}
+  .idx-card-change{font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:3px;}
+  .idx-card-spark{margin-top:8px; line-height:0;}
+  .idx-card-spark svg{width:100%; height:28px;}
+
+  .news-item{padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .news-item:last-child{border-bottom:none;}
+  .news-item .news-source{color:var(--text-muted); font-size:12.5px; margin-right:8px;}
+
+  .rank-sub{font-size:13px; color:var(--gold); margin:16px 0 8px;}
+  .rank-sub:first-child{margin-top:0;}
+  .rank-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rank-table td{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table td:last-child{text-align:right; font-family:'JetBrains Mono',monospace;}
+  .rank-etf-tag{font-size:10.5px; color:var(--text-muted); border:1px solid var(--hairline);
+                border-radius:4px; padding:1px 5px; margin-left:6px;}
+
   @media (max-width:480px){
     .hero-number{font-size:40px;}
     .stat-grid,.darkhorse-grid{grid-template-columns:1fr;}
+    .idx-card-grid{grid-template-columns:repeat(2,1fr);}
   }
 
 </style>
@@ -161,24 +184,60 @@
   
 <header>
   <div class="masthead-label">盤後快訊 · 盤後 · 每日市場摘要</div>
-  <h1 class="masthead-date">2026年9月4日．週五</h1>
+  <h1 class="masthead-date">2026年9月5日．週六</h1>
 </header>
 
 
+<div class="idx-card-grid">
+  
+<div class="idx-card">
+  <div class="idx-card-name">加權指數</div>
+  <div class="idx-card-close mono">24,586.12</div>
+  <div class="idx-card-change mono up">
+    ▲ 186.42（+0.76%）
+  </div>
+  
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">櫃買指數</div>
+  <div class="idx-card-close mono">248.12</div>
+  <div class="idx-card-change mono down">
+    ▼ 2.66（-1.06%）
+  </div>
+  
+</div>
+
+</div>
+
+
+
 <section class="hero">
-  <div class="hero-eyebrow">加權指數</div>
-  <span class="hero-number mono">45,857.66</span><span
-    class="hero-change mono up">▲ 307.06（-0.67%）</span>
   <div class="hero-stats">
+    
+    <div class="stat-item"><span class="label">成交值</span>
+      <span class="value">3,842 億</span></div>
     
     
     <div class="stat-item"><span class="label">三大法人合計</span>
-      <span class="value up">買超 616.7 億</span></div>
+      <span class="value up">買超 62.4 億</span></div>
     
+    
+    <div class="stat-item"><span class="label">漲跌家數</span>
+      <span class="value">漲 612 / 跌 398</span></div>
     
   </div>
 </section>
 <hr class="divider">
+
+
+
+<div class="watch-hits">
+  <div class="wh-label">你的自選股今日被掃到</div>
+  
+  <div class="wh-item"><strong>2330 台積電</strong> — 出現在題材「AI 伺服器散熱」</div>
+  
+</div>
 
 
 
@@ -197,31 +256,150 @@
     <span class="inst-name">外資</span>
     <div class="bar-track">
       <div class="bar-fill up"
-           style="width:50%"></div>
+           style="width:12.1%"></div>
     </div>
-    <span class="inst-value mono up">+562.1億</span>
+    <span class="inst-value mono up">+48.2億</span>
   </div>
   
   <div class="inst-row">
     <span class="inst-name">投信</span>
     <div class="bar-track">
-      <div class="bar-fill down"
-           style="width:2.3%"></div>
+      <div class="bar-fill up"
+           style="width:4.7%"></div>
     </div>
-    <span class="inst-value mono down">-9.1億</span>
+    <span class="inst-value mono up">+18.6億</span>
   </div>
   
   <div class="inst-row">
     <span class="inst-name">自營商</span>
     <div class="bar-track">
-      <div class="bar-fill up"
-           style="width:15.9%"></div>
+      <div class="bar-fill down"
+           style="width:1.1%"></div>
     </div>
-    <span class="inst-value mono up">+63.7億</span>
+    <span class="inst-value mono down">-4.4億</span>
   </div>
   
   
-  <p class="commentary" style="margin-top:14px">大盤今日收45,857點、下跌0.67%，但三大法人合計買超逾61億，外資單獨買超56億，顯示指數下跌並非法人出場所致，更像是散戶或短線籌碼的調節壓力。金融族群出現玉山金、遠東銀放量表態，量能倍數達2.5-3倍，時間點恰好落在大盤走弱之際，資金有從強勢科技股側移的跡象，但目前僅兩檔銀行股孤掌難鳴，其餘金控未見跟進，族群輪動的力道仍需確認。後續觀察重點在於外資買超的標的集中度，以及金融股是否出現更廣泛的法人承接，否則此波動更接近個股事件而非板塊性資金移動。</p>
+  <p class="commentary" style="margin-top:14px">費半領漲那斯達克，AI 伺服器供應鏈延續強勢，台積電 ADR 同步走高，對台股電子權值股偏正面。外資與投信同步買超，資金集中在機器人與散熱族群，傳產金融表現平淡，顯示盤面集中度偏高。</p>
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>個股三大法人買賣超排名</h2>
+  
+  <div class="rank-sub">買超前 10 名</div>
+  <table class="rank-table">
+    
+    <tr>
+      <td>2308 台達電</td>
+      <td class="up">+29,830,202 股</td>
+    </tr>
+    
+    <tr>
+      <td>2382 廣達</td>
+      <td class="up">+23,093,651 股</td>
+    </tr>
+    
+    <tr>
+      <td>3661 世芯-KY</td>
+      <td class="up">+22,754,078 股</td>
+    </tr>
+    
+    <tr>
+      <td>2412 中華電</td>
+      <td class="up">+21,372,723 股</td>
+    </tr>
+    
+    <tr>
+      <td>3231 緯創</td>
+      <td class="up">+20,523,409 股</td>
+    </tr>
+    
+    <tr>
+      <td>2330 台積電</td>
+      <td class="up">+19,992,829 股</td>
+    </tr>
+    
+    <tr>
+      <td>2454 聯發科</td>
+      <td class="up">+14,701,506 股</td>
+    </tr>
+    
+    <tr>
+      <td>6669 緯穎</td>
+      <td class="up">+14,134,457 股</td>
+    </tr>
+    
+    <tr>
+      <td>00878 國泰永續高股息<span class="rank-etf-tag">ETF</span></td>
+      <td class="up">+11,837,430 股</td>
+    </tr>
+    
+    <tr>
+      <td>2603 長榮</td>
+      <td class="up">+8,452,134 股</td>
+    </tr>
+    
+  </table>
+  
+  
+  <div class="rank-sub">賣超前 10 名</div>
+  <table class="rank-table">
+    
+    <tr>
+      <td>2834 臺企銀</td>
+      <td class="down">-27,939,869 股</td>
+    </tr>
+    
+    <tr>
+      <td>2327 國巨</td>
+      <td class="down">-25,641,507 股</td>
+    </tr>
+    
+    <tr>
+      <td>6770 力積電</td>
+      <td class="down">-24,188,315 股</td>
+    </tr>
+    
+    <tr>
+      <td>2882 國泰金</td>
+      <td class="down">-14,754,919 股</td>
+    </tr>
+    
+    <tr>
+      <td>2610 華航</td>
+      <td class="down">-11,710,248 股</td>
+    </tr>
+    
+    <tr>
+      <td>2884 玉山金</td>
+      <td class="down">-11,327,246 股</td>
+    </tr>
+    
+    <tr>
+      <td>1216 統一</td>
+      <td class="down">-9,811,165 股</td>
+    </tr>
+    
+    <tr>
+      <td>3481 群創</td>
+      <td class="down">-9,646,997 股</td>
+    </tr>
+    
+    <tr>
+      <td>2891 中信金</td>
+      <td class="down">-5,389,045 股</td>
+    </tr>
+    
+    <tr>
+      <td>2618 長榮航</td>
+      <td class="down">-4,677,374 股</td>
+    </tr>
+    
+  </table>
+  
 </section>
 <hr class="divider">
 
@@ -232,17 +410,36 @@
   
   <div class="theme-entry">
     <div class="theme-header">
-      <span class="theme-name">金融股補漲</span>
-      <span class="tag confidence-mid">信心度：中高</span>
+      <span class="theme-name">機器人減速機</span>
+      <span class="tag confidence-high">信心度：高</span>
     </div>
-    <p class="theme-desc">玉山金與遠東銀同步放量上攻，疑似資金輪動至金融族群</p>
+    <p class="theme-desc">日系機器人大廠上修資本支出，帶動台廠訂單能見度轉佳。</p>
     <div class="theme-meta">
-      <span>相關個股：玉山金、遠東銀</span>
-      <span class="tag verdict-watch">待觀察</span>
+      <span>相關個股：亞德客-KY、上銀、大銀微系統</span>
+      <span class="tag verdict-real">偏真實</span>
     </div>
     
     <div class="theme-meta" style="margin-top:6px">
-      <span>已追蹤 1 次更新 · 首見 2026-09-04</span>
+      <span>已追蹤 1 次更新 · 首見 2026-09-05</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">AI 伺服器散熱</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">液冷散熱滲透率提升，台廠散熱模組訂單同步走揚。</p>
+    <div class="theme-meta">
+      <span>相關個股：奇鋐、雙鴻、台積電</span>
+      <span class="tag verdict-real">偏真實</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-05</span>
       
     </div>
     
@@ -258,18 +455,18 @@
   <h2>黑馬觀察</h2>
   
   <div class="darkhorse-entry">
-    <div class="darkhorse-name">2481 強茂</div>
+    <div class="darkhorse-name">6187 萬潤</div>
     <div class="darkhorse-grid">
       <div><span class="dh-label">今日漲幅</span><br>
-        <span class="dh-value up">+5.41%</span></div>
+        <span class="dh-value up">+9.40%</span></div>
       <div><span class="dh-label">量能倍數</span><br>
-        <span class="dh-value">2.36 倍</span></div>
+        <span class="dh-value">6.7 倍</span></div>
       <div><span class="dh-label">風險等級</span><br>
-        <span class="dh-value">中</span></div>
+        <span class="dh-value">高</span></div>
       <div><span class="dh-label">法人動向</span><br>
         <span class="dh-value">未經驗證</span></div>
     </div>
-    <div class="darkhorse-note">強茂為功率半導體／二極體廠，今日清單中找不到同族群（如台半、台慶科、德微等）的對應個股同步表態，無法構成題材敘事。單一個股放量上漲，需獨立追查是否有特定催化劑（如接單傳聞、法說會、客戶拉貨），暫無法歸入任何主題。　建議列為觀察而非追蹤標的。</div>
+    <div class="darkhorse-note">爆量上漲但無同族群呼應，亦無明確題材脈絡。　建議列為觀察而非追蹤標的。</div>
   </div>
   
 </section>
@@ -283,21 +480,45 @@
     <tr><th>股票</th><th>訊號</th><th>備註</th></tr>
     
     <tr>
-      <td>2884 玉山金</td>
-      <td class="signal-warn">過熱警訊</td>
-      <td class="t-note">均線多頭排列，站上季線，RSI 85.4 進入超買區，KD 高檔鈍化風險</td>
+      <td>2330 台積電 <span class="tag watchlist">自選</span></td>
+      <td class="signal-bear">偏弱</td>
+      <td class="t-note">均線糾結，方向未明，站上季線，量縮價漲，價量背離</td>
     </tr>
     
     <tr>
-      <td>2845 遠東銀</td>
+      <td>1590 亞德客-KY</td>
       <td class="signal-bull">多頭健康</td>
       <td class="t-note">均線多頭排列，站上季線</td>
     </tr>
     
     <tr>
-      <td>2481 強茂</td>
+      <td>2049 上銀</td>
+      <td class="signal-warn">過熱警訊</td>
+      <td class="t-note">均線多頭排列，站上季線，RSI 82.3 進入超買區，KD 高檔鈍化風險，量縮價漲，價量背離</td>
+    </tr>
+    
+    <tr>
+      <td>1521 大銀微系統</td>
+      <td class="signal-warn">過熱警訊</td>
+      <td class="t-note">均線空頭排列，季線之下，RSI 23.8 進入超賣區</td>
+    </tr>
+    
+    <tr>
+      <td>3017 奇鋐</td>
+      <td class="signal-warn">過熱警訊</td>
+      <td class="t-note">均線空頭排列，季線之下</td>
+    </tr>
+    
+    <tr>
+      <td>3324 雙鴻</td>
+      <td class="signal-warn">過熱警訊</td>
+      <td class="t-note">均線空頭排列，季線之下</td>
+    </tr>
+    
+    <tr>
+      <td>6187 萬潤</td>
       <td class="signal-neutral">區間整理</td>
-      <td class="t-note">均線糾結，方向未明，季線之下，量增價漲（量能 2.32 倍）</td>
+      <td class="t-note">均線多頭排列，季線之下</td>
     </tr>
     
   </table>
@@ -306,10 +527,25 @@
 
 
 
+<section class="block">
+  <h2>今日法說會</h2>
+  
+  <div class="call-item">
+    <span>2049 上銀 · 14:00</span>
+    <span class="call-note">市場關注機器人減速機訂單能見度</span>
+  </div>
+  
+  <div class="call-item">
+    <span>3017 奇鋐 · 15:00</span>
+    <span class="call-note">AI 伺服器散熱出貨展望</span>
+  </div>
+  
+</section>
+
 
 
   <footer class="site-footer">
-    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-09-04 23:51</p>
+    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-09-05 00:44</p>
     <p>本頁面為系統自動生成之市場資訊整理，僅供個人研究參考，不構成投資建議。</p>
   </footer>
 </div>

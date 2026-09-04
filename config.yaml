@@ -59,17 +59,28 @@ global_themes:
     - "AI datacenter capex"
   # 類股 ETF：用價格動能與量能倍數當資金流向的近似值（免費資料源沒有真實 fund flow）
   sector_etfs:
-    - { symbol: "xlk.us", name: "科技 XLK" }
-    - { symbol: "smh.us", name: "半導體 SMH" }
-    - { symbol: "xlf.us", name: "金融 XLF" }
-    - { symbol: "xle.us", name: "能源 XLE" }
+    - { symbol: "XLK", name: "科技 XLK" }
+    - { symbol: "SMH", name: "半導體 SMH" }
+    - { symbol: "XLF", name: "金融 XLF" }
+    - { symbol: "XLE", name: "能源 XLE" }
   max_headlines: 40           # 丟給 LLM 的頭條上限，控制 token 用量
+  # 台股早報重點新聞：同樣走 Google News RSS，換成中文查詢字串
+  tw_news_queries:
+    - "台股 大盤"
+    - "台積電"
+    - "外資 買超 OR 賣超"
+    - "台股 法說會"
 
 # ── 週報 ────────────────────────────────────────────
 # 不獨立開排程：台股週五 13:30 收但美股週五晚上才交易，
 # 週五發的週報會漏掉整個美股交易日。改成併入「當週第一個交易日」的早報。
 weekly:
   enabled: true
+
+# ── 個股三大法人買賣超排名 ──────────────────────────
+institutional_ranking:
+  enabled: true
+  top_n: 10                   # 買超／賣超各取前 N 名（含 ETF）
 
 # ── LLM ─────────────────────────────────────────────
 llm:

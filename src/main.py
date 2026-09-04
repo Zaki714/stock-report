@@ -19,8 +19,8 @@ from datetime import date, timedelta
 
 from . import db, llm, render
 from .analysis import charts, global_themes, recap, review, screener, technical
-from .config import load_config, today_str, now_tpe
-from .fetchers import international, mops, twse
+from .config import DRY_RUN, load_config, today_str, now_tpe
+from .fetchers import international, mops, news, tpex, twse
 from .market_calendar import (classify_day, is_first_trading_day_of_week,
                               is_last_day_before_reopen, next_trading_day,
                               refresh_holidays)
@@ -37,6 +37,15 @@ def _safe(fn, default, label: str):
         return default
 
 
+def _with_spark(cards: list[dict]) -> list[dict]:
+    """幫指數卡片補上迷你走勢線（history 收盤序列 → SVG）。"""
+    for c in cards:
+        hist = c.get("history")
+        if hist and len(hist) >= 2:
+            c["spark"] = render.mark_safe(charts.sparkline(hist))
+    return cards
+
+
 # ── 早報：國際盤 ───────────────────────────────────────
 def run_morning() -> None:
     cfg = load_config()
@@ -44,6 +53,11 @@ def run_morning() -> None:
     print(f"[morning] 產出國際盤報告 {today}")
 
     intl = _safe(international.fetch_international, {}, "國際盤")
+    if intl.get("indices"):
+        intl["indices"] = _with_spark(intl["indices"])
+    if intl.get("adrs"):
+        intl["adrs"] = _with_spark(intl["adrs"])
+
     calls = _safe(lambda: mops.fetch_earnings_calls(), [], "法說會行事曆")
 
     commentary = _safe(
@@ -53,6 +67,12 @@ def run_morning() -> None:
     # 國際題材追蹤：抓外電頭條 + 類股 ETF 資金流向，歸納當週當紅題材
     gthemes = _safe(lambda: global_themes.build_global_themes(today, cfg), [], "國際題材")
 
+    # 台股早報重點新聞：同一套 Google News RSS，換成中文查詢
+    gt_cfg = cfg.get("global_themes", {})
+    tw_news = _safe(
+        lambda: news.fetch_tw_headlines(gt_cfg.get("tw_news_queries", []), 12),
+        [], "台股新聞")
+
     ctx = {
         "report_kind": "早報 · 國際盤摘要",
         "date_label": render.date_label(today),
@@ -60,6 +80,7 @@ def run_morning() -> None:
         "intl_commentary": commentary,
         "earnings_calls": calls,
         "global_themes": gthemes,
+        "tw_news": tw_news,
     }
 
     # 週報：併入當週第一個交易日的早報，不獨立開排程
@@ -89,9 +110,52 @@ def run_evening() -> None:
     inst = _safe(twse.fetch_institutional_net, {}, "三大法人")
     quotes = _safe(twse.fetch_daily_quotes, [], "個股行情")
     calls = _safe(lambda: mops.fetch_earnings_calls(), [], "法說會")
+    otc = _safe(tpex.fetch_otc_index, {}, "櫃買指數")
 
     if market:
         db.save_market_snapshot(today, {**market, **inst})
+
+    # 加權指數／櫃買指數卡片：每天存一筆快照，走勢線隨著系統運作天數增長
+    # （免費 API 只給最近幾天的滾動視窗，沒有長期歷史可以一次拉）
+    index_cards = []
+    if market.get("taiex_close"):
+        db.save_index_snapshot(today, "taiex", "加權指數", market["taiex_close"],
+                               market.get("taiex_change", 0), market.get("taiex_change_pct", 0))
+    taiex_hist = [s["close"] for s in db.index_series("taiex", 30)]
+    if taiex_hist:
+        index_cards.append(_with_spark([{
+            "name": "加權指數", "close": market.get("taiex_close", taiex_hist[-1]),
+            "change": market.get("taiex_change", 0),
+            "change_pct": market.get("taiex_change_pct", 0),
+            "history": taiex_hist,
+        }])[0])
+
+    if otc.get("close"):
+        # tpex_index 一次會回傳最近幾天的資料，順便補齊還沒存過的快照。
+        # DRY_RUN 假資料的日期是相對「今天」現算的，跟模擬測試常用的
+        # 覆寫 today_str() 對不上，這種情境下只存當天這筆就好，不做回填。
+        if not DRY_RUN:
+            for r in otc.get("recent", []):
+                iso = (f"{r['date'][:4]}-{r['date'][4:6]}-{r['date'][6:]}"
+                       if len(r["date"]) == 8 else r["date"])
+                db.save_index_snapshot(iso, "otc", "櫃買指數", r["close"], r.get("change", 0), 0)
+        db.save_index_snapshot(today, "otc", "櫃買指數", otc["close"], otc["change"], otc["change_pct"])
+    otc_hist = [s["close"] for s in db.index_series("otc", 30)]
+    if otc_hist:
+        index_cards.append(_with_spark([{
+            "name": "櫃買指數", "close": otc.get("close", otc_hist[-1]),
+            "change": otc.get("change", 0), "change_pct": otc.get("change_pct", 0),
+            "history": otc_hist,
+        }])[0])
+
+    # 個股三大法人買賣超排名
+    inst_ranking_buy, inst_ranking_sell = [], []
+    if cfg.get("institutional_ranking", {}).get("enabled"):
+        top_n = cfg["institutional_ranking"].get("top_n", 10)
+        ranking = _safe(twse.fetch_institutional_ranking, [], "個股三大法人排名")
+        if ranking:
+            inst_ranking_buy = ranking[:top_n]
+            inst_ranking_sell = list(reversed(ranking[-top_n:]))
 
     # 第一層：強勢股掃描
     # 先用免歷史資料的條件粗篩（漲幅、成交金額），只對少數候選股抓歷史股價算量能倍數，
@@ -189,6 +253,9 @@ def run_evening() -> None:
         "earnings_calls": calls,
         "commentary": commentary,
         "inst_chart": inst_chart,
+        "index_cards": index_cards,
+        "inst_ranking_buy": inst_ranking_buy,
+        "inst_ranking_sell": inst_ranking_sell,
     }
 
     path = render.render_daily(ctx, f"{today}-evening")
