@@ -8,6 +8,23 @@ from __future__ import annotations
 from typing import Any
 
 
+def prefilter_candidates(quotes: list[dict], cfg: dict) -> list[dict]:
+    """在抓歷史股價（算量能倍數）之前，先用不需要歷史資料的條件粗篩。
+
+    台股上市櫃合計近 2000 檔，若對全部個股逐檔打歷史股價 API 才篩選，
+    等於一次發出數千個請求，實務上會很慢、也容易被資料源判定為爬蟲擋掉。
+    這裡先用漲幅、成交金額（跟 scan_strong_stocks 一樣的門檻）篩掉大多數，
+    只對剩下的少數候選股呼叫 attach_volume_ratio，結果與不做這層篩選完全一致
+    ——因為漲幅／成交金額不合格的個股，本來就會在 scan_strong_stocks 被刷掉。
+    """
+    s = cfg["screener"]
+    return [
+        q for q in quotes
+        if q.get("change_pct", 0) >= s["min_change_pct"]
+        and q.get("turnover", 0) >= s["min_turnover"]
+    ]
+
+
 def scan_strong_stocks(quotes: list[dict], cfg: dict) -> list[dict]:
     """依漲幅、量能、成交金額篩出今日強勢股。"""
     s = cfg["screener"]

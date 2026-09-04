@@ -94,9 +94,14 @@ def run_evening() -> None:
         db.save_market_snapshot(today, {**market, **inst})
 
     # 第一層：強勢股掃描
-    quotes = screener.attach_volume_ratio(quotes, twse.fetch_stock_history)
-    strong = screener.scan_strong_stocks(quotes, cfg)
-    print(f"[evening] 強勢股 {len(strong)} 檔")
+    # 先用免歷史資料的條件粗篩（漲幅、成交金額），只對少數候選股抓歷史股價算量能倍數，
+    # 避免對全部近 2000 檔上市櫃股票逐檔打 API（會很慢，也容易被資料源擋）。
+    # candidates 跟 quotes 裡的是同一批 dict 物件，這裡對 candidates 補上的 volume_ratio
+    # 之後透過 quotes_by_code 查得到（見下方黑馬判定）。
+    candidates = screener.prefilter_candidates(quotes, cfg)
+    candidates = screener.attach_volume_ratio(candidates, twse.fetch_stock_history)
+    strong = screener.scan_strong_stocks(candidates, cfg)
+    print(f"[evening] 強勢股 {len(strong)} 檔（粗篩候選 {len(candidates)} / 全市場 {len(quotes)} 檔）")
 
     # 第二層：題材聚類（含孤立訊號分流）
     call_context = "\n".join(f"{c['code']} {c['name']} 法說會：{c['note']}" for c in calls)
