@@ -69,6 +69,17 @@
   .entry .date{font-family:'JetBrains Mono',monospace; color:var(--text-muted);
                font-size:13px; flex-shrink:0;}
 
+  .today-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:28px 0;}
+  .today-card{background:var(--surface); border-radius:8px; padding:20px 22px;}
+  .today-card .tc-label{font-size:12.5px; color:var(--gold); margin-bottom:8px;}
+  .today-card .tc-title{font-family:'Noto Serif TC',serif; font-size:17px; font-weight:600;}
+  .today-card a{color:var(--gold); text-decoration:none; font-size:13.5px;
+                display:inline-block; margin-top:10px;}
+  .today-card a:hover{text-decoration:underline;}
+  .today-card.pending{opacity:.5;}
+  .today-card.pending .tc-title{color:var(--text-muted); font-weight:400;}
+  @media (max-width:480px){.today-grid{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -83,7 +94,25 @@
 <header><div class="masthead-label">盤後快訊</div>
 <h1 class="masthead-date">每日市場分析</h1></header>
 
-<div class="latest-card" style="margin-top:28px">
+<div class="today-card" style="margin-top:24px; margin-bottom:0"><div class="tc-label">今天 · 2026年9月5日．週六</div></div>
+<div class="today-grid">
+  
+  <div class="today-card pending">
+    <div class="tc-label">早報</div>
+    <div class="tc-title">尚未產出</div>
+  </div>
+  
+  
+  <div class="today-card">
+    <div class="tc-label">盤後</div>
+    <div class="tc-title">已產出</div>
+    <a href="reports/2026-09-05-evening.html">閱讀盤後報告 →</a>
+  </div>
+  
+</div>
+
+
+<div class="latest-card">
   <div class="lc-label">最新報告</div>
   <div class="lc-title">2026年9月5日．週六　盤後</div>
   <a href="reports/2026-09-05-evening.html">閱讀完整報告 →</a>
@@ -108,12 +137,17 @@
   <span class="tag confidence-high">高</span>
 </div>
 
+<div class="entry">
+  <span>金融股全面補漲</span>
+  <span class="tag confidence-high">高</span>
+</div>
+
 </section>
 
 
 
   <footer class="site-footer">
-    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-09-05 01:12</p>
+    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-09-05 01:32</p>
     <p>本頁面為系統自動生成之市場資訊整理，僅供個人研究參考，不構成投資建議。</p>
   </footer>
 </div>
