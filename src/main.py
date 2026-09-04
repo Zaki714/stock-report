@@ -22,8 +22,8 @@ from .analysis import charts, global_themes, recap, review, screener, technical
 from .config import DRY_RUN, load_config, today_str, now_tpe
 from .fetchers import international, mops, news, tpex, twse
 from .market_calendar import (classify_day, is_first_trading_day_of_week,
-                              is_last_day_before_reopen, next_trading_day,
-                              refresh_holidays)
+                              is_last_day_before_reopen, is_tw_trading_day,
+                              next_trading_day, refresh_holidays)
 from .notify import send_notification
 
 
@@ -106,11 +106,27 @@ def run_evening() -> None:
     today = today_str()
     print(f"[evening] 產出台股盤後報告 {today}")
 
+    # 守門：今天不是台股交易日就不產出。正常排程（auto 模式）本來就會先檢查
+    # 這件事才決定要不要跑 run_evening()，但這裡直接呼叫 python -m src.main
+    # evening（例如 Actions 網頁手動選 evening 觸發）會跳過那層檢查——手動在
+    # 非交易日（例如週六）觸發，抓到的只會是上一個交易日的舊資料，卻套上今天
+    # 的日期標籤，兩者對不起來。DRY_RUN 測試不受此限制。
+    if not DRY_RUN and not is_tw_trading_day(date.fromisoformat(today)):
+        print(f"[evening] {today} 非台股交易日，略過（避免產出日期標籤跟資料對不起來的報告）")
+        return
+
     market = _safe(twse.fetch_index_summary, {}, "大盤行情")
     inst = _safe(twse.fetch_institutional_net, {}, "三大法人")
     quotes = _safe(twse.fetch_daily_quotes, [], "個股行情")
     calls = _safe(lambda: mops.fetch_earnings_calls(), [], "法說會")
     otc = _safe(tpex.fetch_otc_index, {}, "櫃買指數")
+
+    # TWSE 各端點更新時間點不一樣，data_date 是這筆加權指數資料實際的交易日
+    # （來自回應本身的日期欄位），跟 today 對不起來時印出來，不要悶不吭聲。
+    data_date = market.get("data_date")
+    if data_date and data_date != today:
+        print(f"[warn] 大盤行情資料日期（{data_date}）跟報告日期（{today}）不一致，"
+             f"TWSE 可能還沒更新到今天的資料，本次報告內容請留意")
 
     # 漲跌家數不能用 MI_INDEX20（那份資料只有「成交量前 20 名」），改從
     # 已經抓到的全市場個股行情直接算，DRY_RUN 也一併算過，跟假資料的
@@ -125,6 +141,13 @@ def run_evening() -> None:
     # （免費 API 只給最近幾天的滾動視窗，沒有長期歷史可以一次拉）
     index_cards = []
     if market.get("taiex_close"):
+        # MI_5MINS_HIST 一次會回傳最近幾天的資料，順便補齊還沒存過的快照，
+        # 讓加權指數卡片跟櫃買指數一樣馬上就有走勢線可看，不用等好幾天累積。
+        if not DRY_RUN:
+            recent = _safe(twse.fetch_index_recent, [], "加權指數近期走勢")
+            for r in recent:
+                db.save_index_snapshot(r["date"], "taiex", "加權指數",
+                                       r["close"], r["change"], r["change_pct"])
         db.save_index_snapshot(today, "taiex", "加權指數", market["taiex_close"],
                                market.get("taiex_change", 0), market.get("taiex_change_pct", 0))
     taiex_hist = [s["close"] for s in db.index_series("taiex", 30)]

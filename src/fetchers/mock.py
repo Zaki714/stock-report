@@ -133,6 +133,19 @@ def otc_index() -> dict:
     }
 
 
+def taiex_recent(days: int = 5) -> list[dict]:
+    """DRY_RUN：加權指數最近幾天走勢，補齊 index_snapshots 用。跟 otc_index() 的
+    recent 一樣特意不用 date.today()（見 main.py 的 DRY_RUN 回填判斷）。"""
+    hist = _fake_history(24500.0, drift=0.0008)[-days:]
+    out, prev = [], None
+    for i, c in enumerate(hist):
+        change = round(c - prev, 2) if prev else 0.0
+        out.append({"date": f"mock-day-{i}", "close": c, "change": change,
+                    "change_pct": round(change / prev * 100, 2) if prev else 0.0})
+        prev = c
+    return out
+
+
 def institutional_ranking() -> list[dict]:
     """DRY_RUN：個股三大法人買賣超排名。買超／賣超各給 12 檔，
     數量刻意大於 config 預設的 top_n（10），避免排行榜前後兩段重疊。"""

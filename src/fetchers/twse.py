@@ -41,8 +41,26 @@ def _num(value: Any) -> float:
         return 0.0
 
 
+def _roc_to_iso(raw: str) -> str | None:
+    """民國年日期（1150904 或 115/09/04）轉西元 ISO。TWSE 好幾個端點都用這個格式。"""
+    raw = str(raw).strip().replace("/", "")
+    if not raw.isdigit() or len(raw) != 7:
+        return None
+    try:
+        return f"{int(raw[:3]) + 1911}-{raw[3:5]}-{raw[5:]}"
+    except ValueError:
+        return None
+
+
 def fetch_index_summary() -> dict:
-    """大盤收盤行情：加權指數、成交量、漲跌家數。"""
+    """大盤收盤行情：加權指數、成交量、漲跌家數。
+
+    回傳的 data_date 是這筆資料本身「實際是哪一個交易日」（來自 TWSE 回應裡的
+    日期欄位），不是呼叫當下的今天。TWSE 不同端點更新時間點不一樣（加權指數
+    收盤後很快就有，三大法人要晚一點才落地），用這個欄位讓呼叫端能自己判斷
+    抓到的到底是不是「今天」的資料，避免不同端點各自最新、但其實不是同一個
+    交易日的資料被混在同一份報告裡。
+    """
     if DRY_RUN:
         return mock.index_summary()
 
@@ -61,6 +79,7 @@ def fetch_index_summary() -> dict:
                 result["taiex_close"] = _num(row.get("收盤指數") or row.get("ClosingIndex"))
                 result["taiex_change"] = sign * _num(row.get("漲跌點數") or row.get("Change"))
                 result["taiex_change_pct"] = _num(row.get("漲跌百分比") or row.get("ChangePercent"))
+                result["data_date"] = _roc_to_iso(row.get("日期") or row.get("Date") or "")
                 break
 
     # 漲跌家數不能用 MI_INDEX20（那是「成交量前 20 名個股」，只有 20 檔，
@@ -68,6 +87,34 @@ def fetch_index_summary() -> dict:
     # 透過 compute_breadth() 算，避免多打一次不對的 API。
 
     return result or mock.index_summary()
+
+
+def fetch_index_recent(days: int = 5) -> list[dict]:
+    """加權指數最近幾個交易日的開高低收，補齊 index_snapshots 走勢線用。
+
+    跟 tpex.fetch_otc_index() 的 recent 是同樣的用途：櫃買指數那個端點本來就會
+    回傳最近幾天，加權指數這邊原本只抓「今天」單一筆，走勢線要等系統跑很多天
+    才會長出來；改抓 MI_5MINS_HIST 一次拿到最近幾天，跟櫃買指數一樣馬上就有線。
+    """
+    if DRY_RUN:
+        return mock.taiex_recent(days)
+
+    rows = _get("/indicesReport/MI_5MINS_HIST")
+    if not rows:
+        return []
+
+    out = []
+    prev_close = None
+    for row in rows[-days:]:
+        iso = _roc_to_iso(row.get("Date") or row.get("日期") or "")
+        close = _num(row.get("ClosingIndex") or row.get("收盤指數"))
+        if not iso or close <= 0:
+            continue
+        change = round(close - prev_close, 2) if prev_close else 0.0
+        change_pct = round(change / prev_close * 100, 2) if prev_close else 0.0
+        out.append({"date": iso, "close": close, "change": change, "change_pct": change_pct})
+        prev_close = close
+    return out
 
 
 def compute_breadth(quotes: list[dict]) -> dict:
