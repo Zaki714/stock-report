@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤後快訊 · 2026年9月18日．週五</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1C1B19; --surface:#242220; --surface-2:#2B2925;
+    --text-primary:#EDE9E1; --text-secondary:#A39C8E; --text-muted:#726C60;
+    --red:#DB544A; --green:#4F9E71; --gold:#D9A441; --hairline:#3A362F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--text-primary);
+       font-family:'Noto Sans TC',sans-serif; line-height:1.7;
+       -webkit-font-smoothing:antialiased;}
+  .page{max-width:640px; margin:0 auto; padding:48px 24px 64px;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  /* 台股慣例：紅漲綠跌。切勿套用美股配色，會讓人看反方向 */
+  .up{color:var(--red);} .down{color:var(--green);}
+  hr.divider{border:none; border-top:1px solid var(--hairline); margin:28px 0;}
+
+  .nav{display:flex; gap:18px; font-size:13px; color:var(--text-muted);
+       margin-bottom:28px; flex-wrap:wrap;}
+  .nav a{text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px;}
+  .nav a:hover,.nav a:focus-visible{color:var(--gold); border-bottom-color:var(--gold);}
+
+  .masthead-label{font-size:13px; color:var(--text-muted); margin-bottom:6px;}
+  .masthead-date{font-family:'Noto Serif TC',serif; font-weight:600; font-size:26px;}
+
+  .block h2{font-family:'Noto Serif TC',serif; font-weight:600;
+            font-size:20px; margin-bottom:16px;}
+  .commentary{font-size:15px; color:var(--text-secondary); line-height:1.8;}
+
+  .tag{font-size:12px; padding:3px 9px; border-radius:100px; white-space:nowrap;}
+  .tag.confidence-high{background:rgba(217,164,65,.16); color:var(--gold);}
+  .tag.confidence-mid{background:rgba(163,156,142,.16); color:var(--text-secondary);}
+  .tag.confidence-low{background:rgba(114,108,96,.16); color:var(--text-muted);}
+  .tag.verdict-real{background:rgba(79,158,113,.16); color:var(--green);}
+  .tag.verdict-watch{background:rgba(219,84,74,.16); color:var(--red);}
+  .tag.watchlist{background:rgba(217,164,65,.2); color:var(--gold);}
+
+  footer.site-footer{margin-top:44px; padding-top:20px;
+                     border-top:1px solid var(--hairline);}
+  footer.site-footer p{font-size:12.5px; color:var(--text-muted);
+                       margin-bottom:6px; line-height:1.6;}
+
+  @media (max-width:480px){
+    .page{padding:36px 18px 56px;}
+    .masthead-date{font-size:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+
+  .hero{margin-top:8px; padding-bottom:28px;}
+  .hero-eyebrow{font-size:14px; color:var(--text-secondary); margin-bottom:8px;}
+  .hero-number{font-family:'JetBrains Mono',monospace; font-size:52px;
+               font-weight:500; letter-spacing:-.01em;}
+  .hero-change{font-family:'JetBrains Mono',monospace; font-size:18px; margin-left:14px;}
+  .hero-stats{display:flex; gap:32px; margin-top:18px; flex-wrap:wrap;}
+  .hero-stats .stat-item{display:flex; flex-direction:column; gap:4px;}
+  .hero-stats .label{font-size:13px; color:var(--text-muted);}
+  .hero-stats .value{font-family:'JetBrains Mono',monospace; font-size:16px;}
+
+  .watch-hits{background:rgba(217,164,65,.08); border-left:2px solid var(--gold);
+              border-radius:0 6px 6px 0; padding:14px 18px; margin-bottom:28px;}
+  .watch-hits .wh-label{font-size:12.5px; color:var(--gold); margin-bottom:8px;}
+  .watch-hits .wh-item{font-size:14.5px; color:var(--text-secondary); margin-bottom:4px;}
+  .watch-hits .wh-item strong{color:var(--text-primary); font-weight:500;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(2,1fr);
+             gap:14px 24px; margin-bottom:18px;}
+  .stat-grid .stat{display:flex; justify-content:space-between; align-items:baseline;
+                   border-bottom:1px solid var(--hairline); padding-bottom:8px;}
+  .stat-label{font-size:14px; color:var(--text-secondary);}
+  .stat-value{font-family:'JetBrains Mono',monospace; font-size:15px;}
+
+  .inst-row{display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:14px;}
+  .inst-row .inst-name{width:56px; color:var(--text-secondary); flex-shrink:0;}
+  .inst-row .bar-track{flex:1; height:6px; background:var(--surface-2);
+                       border-radius:3px; position:relative; overflow:hidden;}
+  .inst-row .bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
+  .inst-row .bar-fill.up{background:var(--red); left:50%;}
+  .inst-row .bar-fill.down{background:var(--green); right:50%;}
+  .inst-row .inst-value{width:88px; text-align:right;
+                        font-family:'JetBrains Mono',monospace; flex-shrink:0;}
+
+  .theme-entry{border-left:2px solid var(--gold); padding:4px 0 4px 18px; margin-bottom:22px;}
+  .theme-entry:last-child{margin-bottom:0;}
+  .theme-header{display:flex; justify-content:space-between; align-items:baseline;
+                gap:12px; margin-bottom:8px; flex-wrap:wrap;}
+  .theme-name{font-family:'Noto Serif TC',serif; font-weight:600; font-size:17px;}
+  .theme-desc{font-size:14.5px; color:var(--text-secondary); margin-bottom:8px;}
+  .theme-meta{display:flex; justify-content:space-between; align-items:center;
+              font-size:13.5px; color:var(--text-muted); flex-wrap:wrap; gap:8px;}
+  .theme-link{font-size:13px; color:var(--gold); text-decoration:none;
+              display:inline-block; margin-top:8px;}
+  .theme-link:hover{text-decoration:underline;}
+
+  .darkhorse-entry{background:var(--surface); border-left:2px solid var(--red);
+                   border-radius:0 6px 6px 0; padding:16px 18px; margin-bottom:14px;}
+  .darkhorse-name{font-family:'Noto Serif TC',serif; font-weight:600;
+                  font-size:17px; margin-bottom:10px;}
+  .darkhorse-grid{display:grid; grid-template-columns:1fr 1fr;
+                  gap:8px 20px; font-size:13.5px; margin-bottom:12px;}
+  .darkhorse-grid .dh-label{color:var(--text-muted);}
+  .darkhorse-grid .dh-value{font-family:'JetBrains Mono',monospace;}
+  .darkhorse-note{font-size:13.5px; color:var(--text-secondary);
+                  border-top:1px solid var(--hairline); padding-top:10px;}
+
+  .tech-table{width:100%; border-collapse:collapse;}
+  .tech-table th{text-align:left; font-size:12.5px; font-weight:400;
+                 color:var(--text-muted); padding-bottom:10px;
+                 border-bottom:1px solid var(--hairline);}
+  .tech-table td{padding:12px 0; border-bottom:1px solid var(--hairline);
+                 font-size:14.5px; vertical-align:top;}
+  .tech-table tr:last-child td{border-bottom:none;}
+  .signal-bull{color:var(--red);} .signal-warn{color:var(--gold);}
+  .signal-neutral{color:var(--text-secondary);} .signal-bear{color:var(--green);}
+  .t-note{color:var(--text-muted); font-size:13px;}
+
+  .call-item{display:flex; justify-content:space-between; gap:12px;
+             padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .call-item:last-child{border-bottom:none;}
+  .call-note{color:var(--text-muted); font-size:13px;}
+
+  .chart-wrap{margin:12px 0 4px;}
+  .theme-kw{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+  .theme-kw span{font-size:11.5px; color:var(--text-muted);
+                 background:var(--surface-2); border-radius:100px; padding:2px 9px;}
+  .theme-signal{font-size:13px; color:var(--text-secondary); margin-top:6px;}
+  .conf-spark{margin-top:6px;}
+
+  .weekly-box{background:var(--surface); border-radius:8px; padding:20px 22px; margin-bottom:28px;}
+  .weekly-box .wb-label{font-size:12.5px; color:var(--gold); margin-bottom:10px;}
+  .weekly-box .wb-headline{font-family:'Noto Serif TC',serif; font-size:18px;
+                           font-weight:600; margin-bottom:12px;}
+  .weekly-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px 20px;
+               font-size:13.5px; margin-bottom:8px;}
+  .weekly-grid .wg-label{color:var(--text-muted);}
+  .weekly-grid .wg-value{font-family:'JetBrains Mono',monospace;}
+
+  .idx-card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                 gap:14px; margin-bottom:24px;}
+  .idx-card{background:var(--surface); border-radius:8px; padding:16px 18px;}
+  .idx-card-name{font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
+  .idx-card-close{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:500;}
+  .idx-card-change{font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:3px;}
+  .idx-card-spark{margin-top:8px; line-height:0;}
+  .idx-card-spark svg{width:100%; height:28px;}
+
+  .news-item{padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .news-item:last-child{border-bottom:none;}
+  .news-item .news-source{color:var(--text-muted); font-size:12.5px; margin-right:8px;}
+
+  .rank-group-label{font-family:'Noto Serif TC',serif; font-weight:600; font-size:15px;
+                    margin:24px 0 4px; padding-top:16px; border-top:1px solid var(--hairline);}
+  .rank-group-label:first-of-type{margin-top:0; padding-top:0; border-top:none;}
+  .rank-sub{font-size:13px; color:var(--gold); margin:14px 0 8px;}
+  .rank-sub:first-child{margin-top:0;}
+  .rank-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rank-table td{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table td:last-child{text-align:right; font-family:'JetBrains Mono',monospace;}
+  .rank-etf-tag{font-size:10.5px; color:var(--text-muted); border:1px solid var(--hairline);
+                border-radius:4px; padding:1px 5px; margin-left:6px;}
+
+  @media (max-width:480px){
+    .hero-number{font-size:40px;}
+    .stat-grid,.darkhorse-grid{grid-template-columns:1fr;}
+    .idx-card-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav">
+    <a href="../index.html">最新</a>
+    <a href="../archive.html">歷史報告</a>
+    <a href="../themes.html">題材知識庫</a>
+  </nav>
+
+  
+<header>
+  <div class="masthead-label">盤後快訊 · 盤後 · 每日市場摘要</div>
+  <h1 class="masthead-date">2026年9月18日．週五</h1>
+</header>
+
+
+<div class="idx-card-grid">
+  
+<div class="idx-card">
+  <div class="idx-card-name">加權指數</div>
+  <div class="idx-card-close mono">46,288.00</div>
+  <div class="idx-card-change mono up">
+    ▲ 439.10（+0.96%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,8.4 11.1,19.6 19.3,24.0 27.4,14.1 35.6,24.0 43.7,3.0 51.9,6.2 60.0,5.0 68.1,8.5 76.3,19.4 84.4,24.0 92.6,29.0 100.7,24.2 108.9,17.9 117.0,17.9" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">櫃買指數</div>
+  <div class="idx-card-close mono">412.68</div>
+  <div class="idx-card-change mono up">
+    ▲ 14.51（+3.64%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,5.1 11.1,9.2 19.3,21.9 27.4,14.1 35.6,14.1 43.7,6.6 51.9,9.0 60.0,8.0 68.1,11.1 76.3,21.6 84.4,22.6 92.6,29.0 100.7,17.6 108.9,18.8 117.0,3.0" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+</div>
+
+
+
+<section class="hero">
+  <div class="hero-stats">
+    
+    
+    <div class="stat-item"><span class="label">三大法人合計</span>
+      <span class="value up">買超 1194.5 億</span></div>
+    
+    
+    <div class="stat-item"><span class="label">漲跌家數</span>
+      <span class="value">漲 949 / 跌 308</span></div>
+    
+  </div>
+</section>
+<hr class="divider">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="block">
+  <h2>三大法人動向</h2>
+  
+  <div class="inst-row">
+    <span class="inst-name">外資</span>
+    <div class="bar-track">
+      <div class="bar-fill up"
+           style="width:50%"></div>
+    </div>
+    <span class="inst-value mono up">+869.9億</span>
+  </div>
+  
+  <div class="inst-row">
+    <span class="inst-name">投信</span>
+    <div class="bar-track">
+      <div class="bar-fill up"
+           style="width:20.4%"></div>
+    </div>
+    <span class="inst-value mono up">+81.5億</span>
+  </div>
+  
+  <div class="inst-row">
+    <span class="inst-name">自營商</span>
+    <div class="bar-track">
+      <div class="bar-fill up"
+           style="width:50%"></div>
+    </div>
+    <span class="inst-value mono up">+243.0億</span>
+  </div>
+  
+  <div class="chart-wrap"><svg viewBox="0 0 560 302" width="100%" preserveAspectRatio="xMidYMid meet" role="img" style="max-width:560px;height:auto"><line x1="291.2" y1="6" x2="291.2" y2="292" stroke="var(--hairline)" stroke-width="1"/><rect x="291.2" y="8.0" width="141.1" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="20.0" fill="var(--text-secondary)" font-size="11">09-04</text><text x="556" y="20.0" fill="var(--red)" font-size="11" text-anchor="end">+562.1 億</text><rect x="291.2" y="34.0" width="141.1" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="46.0" fill="var(--text-secondary)" font-size="11">09-05</text><text x="556" y="46.0" fill="var(--red)" font-size="11" text-anchor="end">+562.1 億</text><rect x="291.2" y="60.0" width="221.6" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="72.0" fill="var(--text-secondary)" font-size="11">09-07</text><text x="556" y="72.0" fill="var(--red)" font-size="11" text-anchor="end">+883.1 億</text><rect x="291.2" y="86.0" width="33.3" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="98.0" fill="var(--text-secondary)" font-size="11">09-08</text><text x="556" y="98.0" fill="var(--red)" font-size="11" text-anchor="end">+132.7 億</text><rect x="291.2" y="112.0" width="52.5" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="124.0" fill="var(--text-secondary)" font-size="11">09-09</text><text x="556" y="124.0" fill="var(--red)" font-size="11" text-anchor="end">+209.2 億</text><rect x="195.0" y="138.0" width="96.2" height="16" rx="2" fill="var(--green)" opacity="0.85"/><text x="6" y="150.0" fill="var(--text-secondary)" font-size="11">09-10</text><text x="556" y="150.0" fill="var(--green)" font-size="11" text-anchor="end">-383.3 億</text><rect x="67.2" y="164.0" width="224.0" height="16" rx="2" fill="var(--green)" opacity="0.85"/><text x="6" y="176.0" fill="var(--text-secondary)" font-size="11">09-11</text><text x="556" y="176.0" fill="var(--green)" font-size="11" text-anchor="end">-892.7 億</text><rect x="133.9" y="190.0" width="157.3" height="16" rx="2" fill="var(--green)" opacity="0.85"/><text x="6" y="202.0" fill="var(--text-secondary)" font-size="11">09-15</text><text x="556" y="202.0" fill="var(--green)" font-size="11" text-anchor="end">-627.0 億</text><rect x="246.1" y="216.0" width="45.1" height="16" rx="2" fill="var(--green)" opacity="0.85"/><text x="6" y="228.0" fill="var(--text-secondary)" font-size="11">09-16</text><text x="556" y="228.0" fill="var(--green)" font-size="11" text-anchor="end">-179.8 億</text><rect x="291.2" y="242.0" width="30.6" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="254.0" fill="var(--text-secondary)" font-size="11">09-17</text><text x="556" y="254.0" fill="var(--red)" font-size="11" text-anchor="end">+121.9 億</text><rect x="291.2" y="268.0" width="218.3" height="16" rx="2" fill="var(--red)" opacity="0.85"/><text x="6" y="280.0" fill="var(--text-secondary)" font-size="11">09-18</text><text x="556" y="280.0" fill="var(--red)" font-size="11" text-anchor="end">+869.9 億</text></svg></div>
+  <p class="commentary" style="font-size:12.5px; color:var(--text-muted)">近半月外資單日買賣超（億元），紅為買超、綠為賣超。</p>
+  <p class="commentary" style="margin-top:14px">加權指數收46,288點、漲近1%，上漲家數達949檔，三大法人合計買超逾119億元，外資主導（約87億）、自營商態度積極（約24億），顯示此波非單純散戶情緒驅動，資金具備一定縱深。族群輪動面，半導體封測／IC通路鏈（矽格、文曄、全新）呈上下游同步表態，與AI伺服器供應鏈的持續布局一致，是今日較具說服力的主線；化工與LED族群雖量能倍增，但小市值集中、缺乏法人佐證，炒作成分難以排除。天線／RF兩檔近漲停、量能達6-9倍，題材想像空間足，但孤立性高，若後續無更多同業跟進，反彈力道恐難延續。</p>
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>個股三大法人買賣超排名</h2>
+  
+  
+  <div class="rank-group-label">外資</div>
+  
+  <div class="rank-sub">買超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>00403A 主動統一升級50<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+102,801,680 股</td>
+  </tr>
+  
+  <tr>
+    <td>6770 力積電</td>
+    <td class="up">+77,685,143 股</td>
+  </tr>
+  
+  <tr>
+    <td>00981A 主動統一台股增長<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+54,654,120 股</td>
+  </tr>
+  
+  <tr>
+    <td>2344 華邦電</td>
+    <td class="up">+42,774,232 股</td>
+  </tr>
+  
+  <tr>
+    <td>2408 南亞科</td>
+    <td class="up">+32,233,006 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  <div class="rank-sub">賣超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>2409 友達</td>
+    <td class="down">-52,162,597 股</td>
+  </tr>
+  
+  <tr>
+    <td>2834 臺企銀</td>
+    <td class="down">-23,884,693 股</td>
+  </tr>
+  
+  <tr>
+    <td>3481 群創</td>
+    <td class="down">-22,782,285 股</td>
+  </tr>
+  
+  <tr>
+    <td>00919 群益台灣精選高息<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-18,623,648 股</td>
+  </tr>
+  
+  <tr>
+    <td>2884 玉山金</td>
+    <td class="down">-17,250,967 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  
+  
+  <div class="rank-group-label">投信</div>
+  
+  <div class="rank-sub">買超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>2303 聯電</td>
+    <td class="up">+13,630,188 股</td>
+  </tr>
+  
+  <tr>
+    <td>2618 長榮航</td>
+    <td class="up">+9,293,811 股</td>
+  </tr>
+  
+  <tr>
+    <td>6446 藥華藥</td>
+    <td class="up">+8,555,302 股</td>
+  </tr>
+  
+  <tr>
+    <td>2382 廣達</td>
+    <td class="up">+5,115,730 股</td>
+  </tr>
+  
+  <tr>
+    <td>2542 興富發</td>
+    <td class="up">+4,108,390 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  <div class="rank-sub">賣超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>2882 國泰金</td>
+    <td class="down">-8,530,045 股</td>
+  </tr>
+  
+  <tr>
+    <td>2885 元大金</td>
+    <td class="down">-5,834,995 股</td>
+  </tr>
+  
+  <tr>
+    <td>2886 兆豐金</td>
+    <td class="down">-5,024,975 股</td>
+  </tr>
+  
+  <tr>
+    <td>2880 華南金</td>
+    <td class="down">-4,364,791 股</td>
+  </tr>
+  
+  <tr>
+    <td>6239 力成</td>
+    <td class="down">-2,618,835 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  
+  
+  <div class="rank-group-label">自營商</div>
+  
+  <div class="rank-sub">買超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>00403A 主動統一升級50<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+155,587,441 股</td>
+  </tr>
+  
+  <tr>
+    <td>00685L 群益臺灣加權正2<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+126,160,708 股</td>
+  </tr>
+  
+  <tr>
+    <td>00631L 元大台灣50正2<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+71,699,246 股</td>
+  </tr>
+  
+  <tr>
+    <td>00405A 主動富邦台灣龍耀<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+34,189,488 股</td>
+  </tr>
+  
+  <tr>
+    <td>0050 元大台灣50<span class="rank-etf-tag">ETF</span></td>
+    <td class="up">+26,692,603 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  <div class="rank-sub">賣超前 5 名</div>
+  
+<table class="rank-table">
+  
+  <tr>
+    <td>00918 大華優利高填息30<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-142,749,893 股</td>
+  </tr>
+  
+  <tr>
+    <td>00712 復華富時不動產<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-87,815,805 股</td>
+  </tr>
+  
+  <tr>
+    <td>00919 群益台灣精選高息<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-49,570,549 股</td>
+  </tr>
+  
+  <tr>
+    <td>00632R 元大台灣50反1<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-21,477,211 股</td>
+  </tr>
+  
+  <tr>
+    <td>00953B 群益優選非投等債<span class="rank-etf-tag">ETF</span></td>
+    <td class="down">-11,214,064 股</td>
+  </tr>
+  
+</table>
+
+  
+  
+  
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>今日題材淘金區</h2>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">化工／特化材料族群</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">石化、特用化學品及化工材料類股同步拉升，呼應原料端報價或政策題材</p>
+    <div class="theme-meta">
+      <span>相關個股：中石化、中華化、東聯、和益、誠美材</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">LED／光電元件族群</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">LED磊晶、封裝及光電相關個股齊漲，反映Mini/Micro LED或車用光電需求升溫預期</p>
+    <div class="theme-meta">
+      <span>相關個股：宏齊、光鋐、上品</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">半導體封測／IC通路族群</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">半導體封測、基板及IC通路股同步走強，呼應AI伺服器及消費性需求復甦</p>
+    <div class="theme-meta">
+      <span>相關個股：矽格、昇陽半導體、全新、文曄、聯傑</span>
+      <span class="tag verdict-real">偏真實</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">天線／RF元件族群</span>
+      <span class="tag confidence-low">信心度：低</span>
+    </div>
+    <p class="theme-desc">天線與射頻元件廠同步大漲，市場預期衛星通訊或新世代手機天線需求爆發</p>
+    <div class="theme-meta">
+      <span>相關個股：耀登、金橋</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">面板／顯示器材料族群</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">面板光學膜、顯示器材料及相關供應鏈同步走強，反映面板報價回穩或新應用需求</p>
+    <div class="theme-meta">
+      <span>相關個股：明基材、瑞軒、映泰</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">砂輪／研磨工具族群</span>
+      <span class="tag confidence-low">信心度：低</span>
+    </div>
+    <p class="theme-desc">研磨材料與精密工具族群受惠半導體及航太製造需求，具實質訂單支撐</p>
+    <div class="theme-meta">
+      <span>相關個股：中砂、界霖</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    
+    <div class="theme-meta" style="margin-top:6px">
+      <span>已追蹤 1 次更新 · 首見 2026-09-18</span>
+      
+    </div>
+    
+    
+  </div>
+  
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>黑馬觀察</h2>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">7799 禾榮科</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+9.85%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">4.36 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">高</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">禾榮科主要從事塑膠射出成型及精密零組件，今日以9.85%漲停、量能4.36倍爆發，但清單中找不到同族群第二檔相呼應，無法歸納進任何一個具說服力的題材敘事，孤立訊號，疑似個股炒作。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">6957 裕慶-KY</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+6.00%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">4.91 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">高</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">裕慶-KY為越南台商，主要從事機車零件及汽機車配件製造，今日漲6%、量能4.91倍，清單中無其他東南亞製造或機車族群個股呼應，孤立訊號，無法歸類。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">4916 事欣科</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+9.69%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.83 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">事欣科主業為醫療器材及工業電腦週邊，今日漲9.69%、量能2.83倍，清單中無醫療器材或工業電腦族群第二檔相呼應，孤立訊號，無法形成題材敘事。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">2493 揚博</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+9.84%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.73 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">揚博主要從事工業電腦及嵌入式系統，今日漲9.84%、量能2.73倍，清單中無法找到相關族群第二檔同步表態，孤立訊號，無法歸類。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">6933 AMAX-KY</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+9.86%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.37 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">AMAX為AI伺服器ODM廠，今日漲9.86%、量能2.37倍，雖AI伺服器為當前主流題材，但清單中無其他直接對應的伺服器ODM族群個股，且其KY身分資訊透明度較低，孤立訊號，無法在本清單中形成族群敘事。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">2033 佳大</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+9.98%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.15 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">佳大主業為木工機械，今日漲9.98%、量能2.15倍，清單中無其他機械或工具機族群個股呼應，孤立訊號，無法歸類。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">8103 瀚荃</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+10.00%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">1.67 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">瀚荃主業為觸控模組及工控面板，今日漲停、量能1.67倍，清單中無直接觸控模組族群個股相呼應，與面板族群關聯間接且業務差異大，不宜硬套，孤立訊號。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">2371 大同</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+5.13%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">3.33 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">高</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">大同為多角化集團（馬達、家電、能源、不動產），今日漲5.13%、量能3.33倍，涉及題材過於分散，清單中無同質族群可呼應形成單一題材敘事，且大同本身具資產股性格，股價波動驅動因素複雜，不宜強行歸類。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">4771 望隼</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+3.40%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.47 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">望隼主業為AI影像辨識及安防系統，今日漲3.4%、量能2.47倍，雖AI為廣泛題材，但清單中無其他安防或AI視覺族群個股相呼應，孤立訊號，無法形成具說服力的族群敘事。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+  <div class="darkhorse-entry">
+    <div class="darkhorse-name">9945 潤泰新</div>
+    <div class="darkhorse-grid">
+      <div><span class="dh-label">今日漲幅</span><br>
+        <span class="dh-value up">+3.21%</span></div>
+      <div><span class="dh-label">量能倍數</span><br>
+        <span class="dh-value">2.01 倍</span></div>
+      <div><span class="dh-label">風險等級</span><br>
+        <span class="dh-value">中</span></div>
+      <div><span class="dh-label">法人動向</span><br>
+        <span class="dh-value">未經驗證</span></div>
+    </div>
+    <div class="darkhorse-note">潤泰新為建設及零售（潤泰集團）概念股，今日漲3.21%、量能2.01倍，清單中無其他建設或零售族群個股呼應，孤立訊號，無法歸類進任何題材敘事。　建議列為觀察而非追蹤標的。</div>
+  </div>
+  
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>技術面觀察名單</h2>
+  <table class="tech-table">
+    <tr><th>股票</th><th>訊號</th><th>備註</th></tr>
+    
+    <tr>
+      <td>1314 中石化</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線糾結，方向未明，站上季線，RSI 76.0 進入超買區，量增價漲（量能 4.83 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>1727 中華化</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 2.87 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>1710 東聯</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，MACD 金叉</td>
+    </tr>
+    
+    <tr>
+      <td>1709 和益</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 2.67 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>4960 誠美材</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線空頭排列，站上季線，量增價漲（量能 6.29 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>6168 宏齊</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線多頭排列，站上季線，RSI 82.7 進入超買區，量增價漲（量能 3.47 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>4956 光鋐</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 4.9 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>4770 上品</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 2.98 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>6257 矽格</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線糾結，方向未明，站上季線，RSI 70.5 進入超買區，量增價漲（量能 3.81 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>8028 昇陽半導體</td>
+      <td class="signal-warn">過熱警訊</td>
+      <td class="t-note">均線空頭排列，季線之下，量增價漲（量能 3.24 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>2455 全新</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 1.64 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>3036 文曄</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線糾結，方向未明，站上季線</td>
+    </tr>
+    
+    <tr>
+      <td>3094 聯傑</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 2.28 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>3138 耀登</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線糾結，方向未明，站上季線，量增價漲（量能 9.08 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>6133 金橋</td>
+      <td class="signal-bull">多頭健康</td>
+      <td class="t-note">均線多頭排列，站上季線，量增價漲（量能 4.93 倍）</td>
+    </tr>
+    
+    <tr>
+      <td>8215 明基材</td>
+      <td class="signal-neutral">區間整理</td>
+      <td class="t-note">均線糾結，方向未明，站上季線，量增價漲（量能 5.39 倍）</td>
+    </tr>
+    
+  </table>
+</section>
+<hr class="divider">
+
+
+
+
+
+  <footer class="site-footer">
+    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-09-18 22:19</p>
+    <p>本頁面為系統自動生成之市場資訊整理，僅供個人研究參考，不構成投資建議。</p>
+  </footer>
+</div>
+</body>
+</html>
