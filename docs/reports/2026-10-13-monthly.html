@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤後快訊 · 2026 年 10 月 月報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1C1B19; --surface:#242220; --surface-2:#2B2925;
+    --text-primary:#EDE9E1; --text-secondary:#A39C8E; --text-muted:#726C60;
+    --red:#DB544A; --green:#4F9E71; --gold:#D9A441; --hairline:#3A362F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--text-primary);
+       font-family:'Noto Sans TC',sans-serif; line-height:1.7;
+       -webkit-font-smoothing:antialiased;}
+  .page{max-width:640px; margin:0 auto; padding:48px 24px 64px;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  /* 台股慣例：紅漲綠跌。切勿套用美股配色，會讓人看反方向 */
+  .up{color:var(--red);} .down{color:var(--green);}
+  hr.divider{border:none; border-top:1px solid var(--hairline); margin:28px 0;}
+
+  .nav{display:flex; gap:18px; font-size:13px; color:var(--text-muted);
+       margin-bottom:28px; flex-wrap:wrap;}
+  .nav a{text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px;}
+  .nav a:hover,.nav a:focus-visible{color:var(--gold); border-bottom-color:var(--gold);}
+
+  .masthead-label{font-size:13px; color:var(--text-muted); margin-bottom:6px;}
+  .masthead-date{font-family:'Noto Serif TC',serif; font-weight:600; font-size:26px;}
+
+  .block h2{font-family:'Noto Serif TC',serif; font-weight:600;
+            font-size:20px; margin-bottom:16px;}
+  .commentary{font-size:15px; color:var(--text-secondary); line-height:1.8;}
+
+  .tag{font-size:12px; padding:3px 9px; border-radius:100px; white-space:nowrap;}
+  .tag.confidence-high{background:rgba(217,164,65,.16); color:var(--gold);}
+  .tag.confidence-mid{background:rgba(163,156,142,.16); color:var(--text-secondary);}
+  .tag.confidence-low{background:rgba(114,108,96,.16); color:var(--text-muted);}
+  .tag.verdict-real{background:rgba(79,158,113,.16); color:var(--green);}
+  .tag.verdict-watch{background:rgba(219,84,74,.16); color:var(--red);}
+  .tag.watchlist{background:rgba(217,164,65,.2); color:var(--gold);}
+
+  footer.site-footer{margin-top:44px; padding-top:20px;
+                     border-top:1px solid var(--hairline);}
+  footer.site-footer p{font-size:12.5px; color:var(--text-muted);
+                       margin-bottom:6px; line-height:1.6;}
+
+  @media (max-width:480px){
+    .page{padding:36px 18px 56px;}
+    .masthead-date{font-size:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+
+  .masthead-sub{font-size:14px; color:var(--text-secondary); margin-top:6px;}
+  .score-card{background:var(--surface); border-radius:8px; padding:20px 22px; margin-bottom:20px;}
+  .score-card h3{font-family:'Noto Serif TC',serif; font-size:17px; font-weight:600; margin-bottom:12px;}
+  .score-table{width:100%; border-collapse:collapse; margin-bottom:12px;}
+  .score-table th{text-align:right; font-size:12px; font-weight:400; color:var(--text-muted);
+                  padding-bottom:8px; border-bottom:1px solid var(--hairline);}
+  .score-table th:first-child{text-align:left;}
+  .score-table td{padding:9px 0; border-bottom:1px solid var(--hairline);
+                  font-size:14px; text-align:right; font-family:'JetBrains Mono',monospace;}
+  .score-table td:first-child{text-align:left; font-family:'Noto Sans TC',sans-serif;}
+  .score-table tr:last-child td{border-bottom:none;}
+  .score-verdict{font-size:14px; color:var(--text-secondary); line-height:1.7;}
+  .dist-row{display:flex; align-items:center; gap:12px; margin-bottom:8px; font-size:14px;}
+  .dist-row .dr-name{width:64px; color:var(--text-secondary);}
+  .dist-row .dr-track{flex:1; height:8px; background:var(--surface-2); border-radius:4px; overflow:hidden;}
+  .dist-row .dr-fill{height:100%; background:var(--gold);}
+  .dist-row .dr-n{width:40px; text-align:right; font-family:'JetBrains Mono',monospace;}
+  .theme-list{margin-top:6px;}
+  .theme-list .tl-item{display:flex; justify-content:space-between; gap:12px; padding:10px 0;
+                       border-bottom:1px solid var(--hairline); font-size:14px;}
+  .theme-list .tl-item:last-child{border-bottom:none;}
+  .theme-list .tl-meta{color:var(--text-muted); font-size:12.5px;}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav">
+    <a href="../index.html">最新</a>
+    <a href="../archive.html">歷史報告</a>
+    <a href="../themes.html">題材知識庫</a>
+  </nav>
+
+  
+<header>
+  <div class="masthead-label">盤後快訊 · 月報 · 事後驗證</div>
+  <h1 class="masthead-date">2026 年 10 月</h1>
+  <div class="masthead-sub">回頭檢查過去的判斷準不準——核心指標是超額報酬（個股報酬 − 大盤同期報酬）。</div>
+</header>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>事後驗證成績單</h2>
+  
+    
+    <div class="score-card">
+      <h3>14 天回顧　<span style="font-weight:400; color:var(--text-muted); font-size:13px">本次新驗證 303 筆</span></h3>
+      
+      <table class="score-table">
+        <tr><th>信心度</th><th>樣本數</th><th>平均超額報酬</th><th>勝率</th></tr>
+        
+        <tr>
+          <td>高</td>
+          <td>78</td>
+          <td class="up">+3.28%</td>
+          <td>43.6%</td>
+        </tr>
+        
+        <tr>
+          <td>中高</td>
+          <td>110</td>
+          <td class="up">+4.50%</td>
+          <td>48.2%</td>
+        </tr>
+        
+        <tr>
+          <td></td>
+          <td>100</td>
+          <td class="up">+4.85%</td>
+          <td>50.0%</td>
+        </tr>
+        
+        <tr>
+          <td>低</td>
+          <td>15</td>
+          <td class="up">+5.26%</td>
+          <td>53.3%</td>
+        </tr>
+        
+      </table>
+      
+      <p class="score-verdict">高信心度組平均超額報酬 3.28% 並未優於中信心度組的 4.5%，信心度的加權方式需要檢討。</p>
+    </div>
+    
+    <div class="score-card">
+      <h3>30 天回顧　<span style="font-weight:400; color:var(--text-muted); font-size:13px">本次新驗證 108 筆</span></h3>
+      
+      <table class="score-table">
+        <tr><th>信心度</th><th>樣本數</th><th>平均超額報酬</th><th>勝率</th></tr>
+        
+        <tr>
+          <td>高</td>
+          <td>28</td>
+          <td class="up">+4.61%</td>
+          <td>53.6%</td>
+        </tr>
+        
+        <tr>
+          <td>中高</td>
+          <td>41</td>
+          <td class="up">+7.45%</td>
+          <td>46.3%</td>
+        </tr>
+        
+        <tr>
+          <td></td>
+          <td>35</td>
+          <td class="up">+2.99%</td>
+          <td>45.7%</td>
+        </tr>
+        
+        <tr>
+          <td>低</td>
+          <td>4</td>
+          <td class="up">+6.50%</td>
+          <td>25.0%</td>
+        </tr>
+        
+      </table>
+      
+      <p class="score-verdict">高信心度組平均超額報酬 4.61% 並未優於中信心度組的 7.45%，信心度的加權方式需要檢討。</p>
+    </div>
+    
+  
+</section>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>本月題材增減</h2>
+  
+  <div style="font-size:13px; color:var(--gold); margin-bottom:6px">新增建檔</div>
+  <div class="theme-list">
+    
+    <div class="tl-item">
+      <span>RISC-V / 晶片IP與半導體設計<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>觸控與面板模組供應鏈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>石化能源反彈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>工業電腦與邊緣運算<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>被動元件與電感供應鏈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>PCB檢測與材料<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>機械傳動與精密零組件（機器人/電動車）<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>鋼鐵原物料反彈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求爆發與半導體供應鏈擴張<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 2 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>Fed升息預期升溫與利率高原風險<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>軟體與資料中心基礎設施題材分化領漲<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-01 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>面板與觸控顯示族群反彈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>IC設計／半導體封測小型股補漲<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>電線電纜／銅材族群<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>太陽能／再生能源政策題材<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>機械設備／工具機題材<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求爆發與半導體供應鏈全面受益<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>Fed利率路徑不確定性壓制市場情緒<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>能源板塊悄然吸金，成為本週最強隱形題材<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-02 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求爆發與資本支出擴張<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-05 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>Fed利率路徑觀望：跳過10月、12月可能升息<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-05 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI記憶體替代方案崛起：HDD與傳統儲存廠逆襲<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-05 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>PCB／軟板供應鏈<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>觸控／光學模組<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>MCU／特殊IC<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>工程／EPC營建<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>特用化學品／電子化學材料<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>IC測試／半導體後段<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>LED照明／光電<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求爆發與半導體資本支出擴張<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>聯準會利率決策不確定性與通膨壓力<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI資本支出外溢效應：電力基礎設施與半導體材料受惠<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-06 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>PCB印刷電路板族群<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI伺服器機殼/散熱/機構件<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>MOSFET/功率半導體<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>網通/無線通訊設備<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>化學材料/特用化學品<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>IC設計/半導體IP與設計服務<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI基礎設施帶動能源與電力需求<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>高利率環境下科技股韌性與Fed政策預期<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-07 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI伺服器／高速傳輸PCB與封裝基板<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>被動元件／電子材料<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>機電／工業用電氣設備<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>特用化學／染料顏料<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>紡織成衣／機能布料<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>LED驅動IC／光電顯示<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>航運<span class="tl-meta">　台股</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求爆發與三星獲利創紀錄<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>Fed鷹派立場鞏固、再升息預期升溫<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI能源需求衝擊與地緣政治風險交織<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-08 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求強勁但短期獲利了結賣壓湧現<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-09 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>油價急漲推升能源股，資金從科技轉防禦性輪動<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-09 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>超大型科技/金融股受惠AI基建債務融資浪潮<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-09 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>AI晶片需求週期確認與半導體供應鏈重估<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-12 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>聯準會10月利率決策不確定性升溫<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-12 建檔 · 更新 1 次</span>
+    </div>
+    
+    <div class="tl-item">
+      <span>科技股反彈可持續性存疑與回調風險<span class="tl-meta">　國際</span></span>
+      <span class="tl-meta">2026-10-12 建檔 · 更新 1 次</span>
+    </div>
+    
+  </div>
+  
+  
+  
+</section>
+
+<hr class="divider">
+
+<section class="block">
+  <h2>追蹤中題材信心度分布</h2>
+  
+    
+    
+    <div class="dist-row">
+      <span class="dr-name">高</span>
+      <span class="dr-track"><span class="dr-fill" style="width:19.0%"></span></span>
+      <span class="dr-n">11</span>
+    </div>
+    
+    <div class="dist-row">
+      <span class="dr-name">中高</span>
+      <span class="dr-track"><span class="dr-fill" style="width:52.0%"></span></span>
+      <span class="dr-n">30</span>
+    </div>
+    
+    <div class="dist-row">
+      <span class="dr-name">低</span>
+      <span class="dr-track"><span class="dr-fill" style="width:29.0%"></span></span>
+      <span class="dr-n">17</span>
+    </div>
+    
+  
+</section>
+
+
+  <footer class="site-footer">
+    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-10-13 03:44</p>
+    <p>本頁面為系統自動生成之市場資訊整理，僅供個人研究參考，不構成投資建議。</p>
+  </footer>
+</div>
+</body>
+</html>
