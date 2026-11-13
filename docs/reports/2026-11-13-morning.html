@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤後快訊 · 2026年11月13日．週五</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1C1B19; --surface:#242220; --surface-2:#2B2925;
+    --text-primary:#EDE9E1; --text-secondary:#A39C8E; --text-muted:#726C60;
+    --red:#DB544A; --green:#4F9E71; --gold:#D9A441; --hairline:#3A362F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--text-primary);
+       font-family:'Noto Sans TC',sans-serif; line-height:1.7;
+       -webkit-font-smoothing:antialiased;}
+  .page{max-width:640px; margin:0 auto; padding:48px 24px 64px;}
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  /* 台股慣例：紅漲綠跌。切勿套用美股配色，會讓人看反方向 */
+  .up{color:var(--red);} .down{color:var(--green);}
+  hr.divider{border:none; border-top:1px solid var(--hairline); margin:28px 0;}
+
+  .nav{display:flex; gap:18px; font-size:13px; color:var(--text-muted);
+       margin-bottom:28px; flex-wrap:wrap;}
+  .nav a{text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px;}
+  .nav a:hover,.nav a:focus-visible{color:var(--gold); border-bottom-color:var(--gold);}
+
+  .masthead-label{font-size:13px; color:var(--text-muted); margin-bottom:6px;}
+  .masthead-date{font-family:'Noto Serif TC',serif; font-weight:600; font-size:26px;}
+
+  .block h2{font-family:'Noto Serif TC',serif; font-weight:600;
+            font-size:20px; margin-bottom:16px;}
+  .commentary{font-size:15px; color:var(--text-secondary); line-height:1.8;}
+
+  .tag{font-size:12px; padding:3px 9px; border-radius:100px; white-space:nowrap;}
+  .tag.confidence-high{background:rgba(217,164,65,.16); color:var(--gold);}
+  .tag.confidence-mid{background:rgba(163,156,142,.16); color:var(--text-secondary);}
+  .tag.confidence-low{background:rgba(114,108,96,.16); color:var(--text-muted);}
+  .tag.verdict-real{background:rgba(79,158,113,.16); color:var(--green);}
+  .tag.verdict-watch{background:rgba(219,84,74,.16); color:var(--red);}
+  .tag.watchlist{background:rgba(217,164,65,.2); color:var(--gold);}
+
+  footer.site-footer{margin-top:44px; padding-top:20px;
+                     border-top:1px solid var(--hairline);}
+  footer.site-footer p{font-size:12.5px; color:var(--text-muted);
+                       margin-bottom:6px; line-height:1.6;}
+
+  @media (max-width:480px){
+    .page{padding:36px 18px 56px;}
+    .masthead-date{font-size:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+
+  .hero{margin-top:8px; padding-bottom:28px;}
+  .hero-eyebrow{font-size:14px; color:var(--text-secondary); margin-bottom:8px;}
+  .hero-number{font-family:'JetBrains Mono',monospace; font-size:52px;
+               font-weight:500; letter-spacing:-.01em;}
+  .hero-change{font-family:'JetBrains Mono',monospace; font-size:18px; margin-left:14px;}
+  .hero-stats{display:flex; gap:32px; margin-top:18px; flex-wrap:wrap;}
+  .hero-stats .stat-item{display:flex; flex-direction:column; gap:4px;}
+  .hero-stats .label{font-size:13px; color:var(--text-muted);}
+  .hero-stats .value{font-family:'JetBrains Mono',monospace; font-size:16px;}
+
+  .watch-hits{background:rgba(217,164,65,.08); border-left:2px solid var(--gold);
+              border-radius:0 6px 6px 0; padding:14px 18px; margin-bottom:28px;}
+  .watch-hits .wh-label{font-size:12.5px; color:var(--gold); margin-bottom:8px;}
+  .watch-hits .wh-item{font-size:14.5px; color:var(--text-secondary); margin-bottom:4px;}
+  .watch-hits .wh-item strong{color:var(--text-primary); font-weight:500;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(2,1fr);
+             gap:14px 24px; margin-bottom:18px;}
+  .stat-grid .stat{display:flex; justify-content:space-between; align-items:baseline;
+                   border-bottom:1px solid var(--hairline); padding-bottom:8px;}
+  .stat-label{font-size:14px; color:var(--text-secondary);}
+  .stat-value{font-family:'JetBrains Mono',monospace; font-size:15px;}
+
+  .inst-row{display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:14px;}
+  .inst-row .inst-name{width:56px; color:var(--text-secondary); flex-shrink:0;}
+  .inst-row .bar-track{flex:1; height:6px; background:var(--surface-2);
+                       border-radius:3px; position:relative; overflow:hidden;}
+  .inst-row .bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
+  .inst-row .bar-fill.up{background:var(--red); left:50%;}
+  .inst-row .bar-fill.down{background:var(--green); right:50%;}
+  .inst-row .inst-value{width:88px; text-align:right;
+                        font-family:'JetBrains Mono',monospace; flex-shrink:0;}
+
+  .theme-entry{border-left:2px solid var(--gold); padding:4px 0 4px 18px; margin-bottom:22px;}
+  .theme-entry:last-child{margin-bottom:0;}
+  .theme-header{display:flex; justify-content:space-between; align-items:baseline;
+                gap:12px; margin-bottom:8px; flex-wrap:wrap;}
+  .theme-name{font-family:'Noto Serif TC',serif; font-weight:600; font-size:17px;}
+  .theme-desc{font-size:14.5px; color:var(--text-secondary); margin-bottom:8px;}
+  .theme-meta{display:flex; justify-content:space-between; align-items:center;
+              font-size:13.5px; color:var(--text-muted); flex-wrap:wrap; gap:8px;}
+  .theme-link{font-size:13px; color:var(--gold); text-decoration:none;
+              display:inline-block; margin-top:8px;}
+  .theme-link:hover{text-decoration:underline;}
+
+  .darkhorse-entry{background:var(--surface); border-left:2px solid var(--red);
+                   border-radius:0 6px 6px 0; padding:16px 18px; margin-bottom:14px;}
+  .darkhorse-name{font-family:'Noto Serif TC',serif; font-weight:600;
+                  font-size:17px; margin-bottom:10px;}
+  .darkhorse-grid{display:grid; grid-template-columns:1fr 1fr;
+                  gap:8px 20px; font-size:13.5px; margin-bottom:12px;}
+  .darkhorse-grid .dh-label{color:var(--text-muted);}
+  .darkhorse-grid .dh-value{font-family:'JetBrains Mono',monospace;}
+  .darkhorse-note{font-size:13.5px; color:var(--text-secondary);
+                  border-top:1px solid var(--hairline); padding-top:10px;}
+
+  .tech-table{width:100%; border-collapse:collapse;}
+  .tech-table th{text-align:left; font-size:12.5px; font-weight:400;
+                 color:var(--text-muted); padding-bottom:10px;
+                 border-bottom:1px solid var(--hairline);}
+  .tech-table td{padding:12px 0; border-bottom:1px solid var(--hairline);
+                 font-size:14.5px; vertical-align:top;}
+  .tech-table tr:last-child td{border-bottom:none;}
+  .signal-bull{color:var(--red);} .signal-warn{color:var(--gold);}
+  .signal-neutral{color:var(--text-secondary);} .signal-bear{color:var(--green);}
+  .t-note{color:var(--text-muted); font-size:13px;}
+
+  .call-item{display:flex; justify-content:space-between; gap:12px;
+             padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .call-item:last-child{border-bottom:none;}
+  .call-note{color:var(--text-muted); font-size:13px;}
+
+  .chart-wrap{margin:12px 0 4px;}
+  .theme-kw{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;}
+  .theme-kw span{font-size:11.5px; color:var(--text-muted);
+                 background:var(--surface-2); border-radius:100px; padding:2px 9px;}
+  .theme-signal{font-size:13px; color:var(--text-secondary); margin-top:6px;}
+  .conf-spark{margin-top:6px;}
+
+  .weekly-box{background:var(--surface); border-radius:8px; padding:20px 22px; margin-bottom:28px;}
+  .weekly-box .wb-label{font-size:12.5px; color:var(--gold); margin-bottom:10px;}
+  .weekly-box .wb-headline{font-family:'Noto Serif TC',serif; font-size:18px;
+                           font-weight:600; margin-bottom:12px;}
+  .weekly-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px 20px;
+               font-size:13.5px; margin-bottom:8px;}
+  .weekly-grid .wg-label{color:var(--text-muted);}
+  .weekly-grid .wg-value{font-family:'JetBrains Mono',monospace;}
+
+  .idx-card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                 gap:14px; margin-bottom:24px;}
+  .idx-card{background:var(--surface); border-radius:8px; padding:16px 18px;}
+  .idx-card-name{font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
+  .idx-card-close{font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:500;}
+  .idx-card-change{font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:3px;}
+  .idx-card-spark{margin-top:8px; line-height:0;}
+  .idx-card-spark svg{width:100%; height:28px;}
+
+  .news-item{padding:10px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .news-item:last-child{border-bottom:none;}
+  .news-item .news-source{color:var(--text-muted); font-size:12.5px; margin-right:8px;}
+
+  .rank-group-label{font-family:'Noto Serif TC',serif; font-weight:600; font-size:15px;
+                    margin:24px 0 4px; padding-top:16px; border-top:1px solid var(--hairline);}
+  .rank-group-label:first-of-type{margin-top:0; padding-top:0; border-top:none;}
+  .rank-sub{font-size:13px; color:var(--gold); margin:14px 0 8px;}
+  .rank-sub:first-child{margin-top:0;}
+  .rank-table{width:100%; border-collapse:collapse; margin-bottom:8px;}
+  .rank-table td{padding:9px 0; border-bottom:1px solid var(--hairline); font-size:14px;}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table td:last-child{text-align:right; font-family:'JetBrains Mono',monospace;}
+  .rank-etf-tag{font-size:10.5px; color:var(--text-muted); border:1px solid var(--hairline);
+                border-radius:4px; padding:1px 5px; margin-left:6px;}
+
+  @media (max-width:480px){
+    .hero-number{font-size:40px;}
+    .stat-grid,.darkhorse-grid{grid-template-columns:1fr;}
+    .idx-card-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav">
+    <a href="../index.html">最新</a>
+    <a href="../archive.html">歷史報告</a>
+    <a href="../themes.html">題材知識庫</a>
+  </nav>
+
+  
+<header>
+  <div class="masthead-label">盤後快訊 · 早報 · 國際盤摘要</div>
+  <h1 class="masthead-date">2026年11月13日．週五</h1>
+</header>
+
+
+
+
+
+
+
+
+
+
+<section class="block">
+  <h2>國際盤摘要</h2>
+  
+  <div class="idx-card-grid">
+    
+<div class="idx-card">
+  <div class="idx-card-name">道瓊</div>
+  <div class="idx-card-close mono">52,297.09</div>
+  <div class="idx-card-change mono down">
+    ▼ 189.40（-0.36%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,24.2 8.2,24.8 13.4,17.8 18.5,20.0 23.7,20.5 28.9,13.8 34.1,9.3 39.3,9.1 44.5,17.3 49.6,15.5 54.8,15.3 60.0,14.1 65.2,15.7 70.4,22.9 75.5,20.2 80.7,22.7 85.9,3.0 91.1,26.0 96.3,29.0 101.5,15.1 106.6,17.1 111.8,13.9 117.0,16.3" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">那斯達克</div>
+  <div class="idx-card-close mono">25,366.09</div>
+  <div class="idx-card-change mono down">
+    ▼ 100.10（-0.39%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,7.6 13.4,7.4 18.5,12.6 23.7,10.0 28.9,10.0 34.1,7.5 39.3,13.8 44.5,14.2 49.6,12.3 54.8,9.5 60.0,8.9 65.2,12.2 70.4,18.9 75.5,21.4 80.7,19.5 85.9,16.2 91.1,29.0 96.3,26.6 101.5,20.6 106.6,22.2 111.8,18.6 117.0,19.5" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">S&amp;P 500</div>
+  <div class="idx-card-close mono">7,592.40</div>
+  <div class="idx-card-change mono down">
+    ▼ 26.98（-0.35%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,8.0 13.4,6.5 18.5,11.4 23.7,9.6 28.9,8.3 34.1,5.8 39.3,11.2 44.5,13.5 49.6,10.4 54.8,7.8 60.0,6.5 65.2,7.9 70.4,16.0 75.5,18.2 80.7,16.6 85.9,9.7 91.1,29.0 96.3,27.7 101.5,17.7 106.6,19.4 111.8,13.7 117.0,15.3" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">費半 SOX</div>
+  <div class="idx-card-close mono">10,506.67</div>
+  <div class="idx-card-change mono down">
+    ▼ 57.44（-0.54%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,7.3 13.4,8.1 18.5,11.7 23.7,10.3 28.9,10.5 34.1,8.7 39.3,15.0 44.5,14.6 49.6,12.1 54.8,8.9 60.0,7.3 65.2,8.6 70.4,15.4 75.5,18.3 80.7,16.1 85.9,18.8 91.1,29.0 96.3,25.9 101.5,20.7 106.6,21.0 111.8,16.4 117.0,16.8" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+  </div>
+  
+  
+  <div class="stat-label" style="margin-bottom:10px">海外 ADR</div>
+  <div class="idx-card-grid">
+    
+<div class="idx-card">
+  <div class="idx-card-name">台積電 ADR</div>
+  <div class="idx-card-close mono">405.49</div>
+  <div class="idx-card-change mono down">
+    ▼ 7.86（-1.90%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,7.3 13.4,9.5 18.5,12.2 23.7,10.0 28.9,8.7 34.1,6.7 39.3,12.3 44.5,10.5 49.6,8.9 54.8,5.3 60.0,4.6 65.2,6.8 70.4,14.0 75.5,16.1 80.7,14.4 85.9,16.9 91.1,29.0 96.3,22.7 101.5,19.0 106.6,16.7 111.8,12.0 117.0,14.2" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">聯電 ADR</div>
+  <div class="idx-card-close mono">15.76</div>
+  <div class="idx-card-change mono down">
+    ▼ 0.32（-1.99%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,5.9 13.4,7.2 18.5,10.4 23.7,9.7 28.9,10.8 34.1,10.4 39.3,14.1 44.5,13.1 49.6,12.3 54.8,11.5 60.0,13.3 65.2,15.6 70.4,19.5 75.5,20.3 80.7,20.3 85.9,21.3 91.1,29.0 96.3,27.6 101.5,24.6 106.6,24.2 111.8,21.2 117.0,22.1" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+<div class="idx-card">
+  <div class="idx-card-name">日月光 ADR</div>
+  <div class="idx-card-close mono">36.29</div>
+  <div class="idx-card-change mono down">
+    ▼ 1.53（-4.05%）
+  </div>
+  <div class="idx-card-spark"><svg viewBox="0 0 120 32" width="120" height="32" role="img" aria-hidden="true"><polyline points="3.0,3.0 8.2,7.8 13.4,11.3 18.5,14.7 23.7,12.9 28.9,12.9 34.1,10.5 39.3,17.3 44.5,16.0 49.6,14.2 54.8,11.1 60.0,8.4 65.2,7.4 70.4,14.8 75.5,15.3 80.7,15.4 85.9,17.7 91.1,29.0 96.3,26.2 101.5,22.3 106.6,20.6 111.8,17.2 117.0,19.4" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+</div>
+
+  </div>
+  
+  
+  <div class="stat-grid">
+    
+    <div class="stat"><span class="stat-label">美元指數</span>
+      <span class="stat-value mono">103.2（+0.24%）</span></div>
+    
+    <div class="stat"><span class="stat-label">西德州原油</span>
+      <span class="stat-value mono">88.2（+1.94%）</span></div>
+    
+    <div class="stat"><span class="stat-label">黃金</span>
+      <span class="stat-value mono">3,913.2（-2.18%）</span></div>
+    
+  </div>
+  
+  <p class="commentary">美股三大指數小幅收黑，費半跌幅相對較深（-0.54%），但台積電ADR重挫近2%、日月光ADR更跌逾4%，跌幅明顯超出費半本身，顯示外資對台系封裝供應鏈存在額外的賣壓，並非單純跟隨大盤。黃金單日重挫逾2%但美元走強、油價卻同步拉升，這種組合暗示市場在重新定價「通膨預期回升但避險情緒降溫」的情境，而非單純的風險趨避。台積電ADR從高點445美元回落至405美元、累計修正已逾9%，若今日台股開盤外資延續賣超，权重股承壓的格局短期難以扭轉。</p>
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>國際題材追蹤</h2>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">AI晶片需求超級週期延伸</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">Applied Materials創紀錄營收、SMIC與Cerebras上調展望，多方數據印證AI驅動晶片設備需求持續至2026-2027年</p>
+    <div class="theme-meta">
+      <span>代表標的：Applied Materials、中芯國際、Cerebras Systems、Nvidia、Advanced Micro Devices、Micron Technology</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    <div class="theme-signal">資金流向：SMH -1.03% 量能0.84倍，量縮價跌，資金實際流出半導體類股，與頭條敘事背離</div>
+    <div class="theme-signal">機構態度：Applied Materials上調指引為正面信號，但Nvidia CEO醜聞與AMD/競爭格局變化導致機構態度分歧，一致性不足</div>
+    <div class="theme-kw"><span>AI chip demand</span><span>Applied Materials</span><span>SMIC</span><span>Cerebras</span><span>chip upcycle</span><span>chip equipment</span></div>
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">Nvidia領導層危機與AI信心動搖</span>
+      <span class="tag confidence-mid">信心度：中高</span>
+    </div>
+    <p class="theme-desc">Jensen Huang醜聞與中國晶片出口管制爭議引發市場對Nvidia主導地位的疑慮，AI交易資金出現結構性鬆動</p>
+    <div class="theme-meta">
+      <span>代表標的：Nvidia、Advanced Micro Devices、Micron Technology</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    <div class="theme-signal">資金流向：XLK -0.34% 量能0.79倍、SMH -1.03% 量能0.84倍，量縮價跌，市場觀望氣氛濃厚，與負面敘事方向吻合但力道未達恐慌級別</div>
+    <div class="theme-signal">機構態度：機構評等調整訊號分歧，AMD被視為受益者但Nvidia下調聲音尚未形成一致，整體信心不足</div>
+    <div class="theme-kw"><span>Nvidia CEO scandal</span><span>Jensen Huang exit</span><span>China chip exports</span><span>AI jitters</span><span>export controls</span><span>rental loophole</span></div>
+  </div>
+  
+  <div class="theme-entry">
+    <div class="theme-header">
+      <span class="theme-name">Fed 2027會議改制與降息路徑重定價</span>
+      <span class="tag confidence-low">信心度：低</span>
+    </div>
+    <p class="theme-desc">聯準會正式確認2027年縮減至七次利率決策會議，市場開始重新評估未來貨幣政策節奏與資產配置</p>
+    <div class="theme-meta">
+      <span>代表標的：JPMorgan Chase、Goldman Sachs、Bank of America</span>
+      <span class="tag verdict-watch">待觀察</span>
+    </div>
+    <div class="theme-signal">資金流向：XLF -0.72% 量能0.62倍，量縮價跌，金融類股未見資金流入，市場對Fed政策調整反應冷淡</div>
+    <div class="theme-signal">機構態度：目前無投行針對Fed會議改制發出一致性評等調整，機構態度尚不明朗</div>
+    <div class="theme-kw"><span>Federal Reserve</span><span>rate decisions</span><span>2027 meeting schedule</span><span>Warsh</span><span>October skip</span><span>monetary policy</span></div>
+  </div>
+  
+  <p class="commentary" style="margin-top:12px; font-size:13px; color:var(--text-muted)">
+    資金流向為價格動能與量能倍數的近似值，非真實 fund flow 統計。</p>
+</section>
+<hr class="divider">
+
+
+
+<section class="block">
+  <h2>台股早報重點新聞</h2>
+  
+  <div class="news-item">
+    <span class="news-source">口袋證券</span>華碩第三季 EPS 創新高，伺服器能接住 PC 的獲利壓力嗎？ - 口袋證券
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">UDN</span>00410A盤中大漲近5％！成交量超越昨日全天 台股強彈千點AI股全面點火 - UDN
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">UDN</span>無畏黃仁勳下台影響 台股早盤大漲逾千點 - UDN
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">CMoney投資網誌</span>00981A大買AI硬體股，台積電與奇鋐誰先反映獲利？-林彥廷看盤室 - CMoney投資網誌
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">Yahoo新聞</span>台股重返44K 台積電漲45元、聯發科漲停 - Yahoo新聞
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">CMoney</span>2330 台積電 - 老黃暫時下台，輝達供應鏈中，最不可能生變的夥伴關係就是台積電... - 股市爆料同學會 - CMoney
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">CMoney</span>2330 台積電 - 閉門會是11 月 18 - 股市爆料同學會 - CMoney
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">CMoney</span>TWA00 加權指數- 外資大買台玻14萬張！三面向判斷反彈強弱- 股市爆料同學會 - CMoney
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">聯合報數位版</span>台積電、英特爾在美擴廠陷人才荒社大速成班幫填缺口| 世界鏡頭 - 聯合報數位版
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">今周刊</span>台股多頭訊號？許博傑「很抱歉沒看到」，緊盯台幣32.X元止跌訊號！一張賺240萬？3理由，聯發科現在不買待何時 - 今周刊
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">Yahoo新聞</span>黃仁勳下台，台積電會失去什麼？台灣AI供應鏈最怕的不是訂單消失！ - Yahoo新聞
+  </div>
+  
+  <div class="news-item">
+    <span class="news-source">CMoney</span>4919 新唐 - 大盤感覺要變弱了。小心操作😊 - 股市爆料同學會 - CMoney
+  </div>
+  
+</section>
+<hr class="divider">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <footer class="site-footer">
+    <p>資料來源：TWSE、公開資訊觀測站、國際財經資料源　·　產出時間 2026-11-13 11:06</p>
+    <p>本頁面為系統自動生成之市場資訊整理，僅供個人研究參考，不構成投資建議。</p>
+  </footer>
+</div>
+</body>
+</html>
